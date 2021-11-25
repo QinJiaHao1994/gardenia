@@ -8,3 +8,6 @@ export const isFunc = (val) =>
 
 export const isString = (val) =>
   Object.prototype.toString.call(val) === "[object String]";
+
+export const capitalizeFirstLetter = (val) =>
+  val.replace(/^./, (s) => s.toUpperCase());

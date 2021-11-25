@@ -14,6 +14,7 @@ const useApi = (api) => {
     } catch (error) {
       setValue(null);
       setError(error.message);
+      throw error;
     } finally {
       setLoading(false);
     }

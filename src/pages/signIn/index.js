@@ -10,17 +10,15 @@ import { Link as RouterLink } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-import useFormControls, {
-  createForm,
-} from "../../common/hooks/useFormControls";
+import { Form, Field, createForm } from "../../components/form";
 import useApi from "../../common/hooks/useApi";
 import { signin } from "../../features/user/userApi";
 import Image from "../../images/loginBg.jpg";
+import Logo from "../../images/logo.jpeg";
 
 const signInForm = createForm([
   { field: "email", label: "Email Address", required: true },
@@ -29,9 +27,10 @@ const signInForm = createForm([
 
 const SignIn = () => {
   let navigate = useNavigate();
-  const [{ value, loading, error }, api] = useApi(signin);
+  const [{ loading, error }, api] = useApi(signin);
   const [open, setOpen] = useState(false);
-  const { props, validateForm } = useFormControls(signInForm);
+  let [searchParams] = useSearchParams();
+  const to = searchParams.get("to") || "";
 
   useEffect(() => {
     setOpen(!!error);
@@ -39,14 +38,13 @@ const SignIn = () => {
 
   const handleClose = () => setOpen(false);
 
-  if (value) {
-    navigate("/");
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, validateForm) => {
     e.preventDefault();
-    const data = await validateForm();
-    api(data);
+    try {
+      const data = await validateForm();
+      await api(data);
+      navigate(`/${to}`);
+    } catch (err) {}
   };
 
   return (
@@ -78,33 +76,35 @@ const SignIn = () => {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Avatar
+            sx={{ m: 1, bgcolor: "secondary.main", width: 64, height: 64 }}
+            src={Logo}
+          />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
+          <Form
+            form={signInForm}
             component="form"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
           >
-            <TextField
+            <Field
+              name="email"
+              component={TextField}
               margin="normal"
-              required
               fullWidth
               autoComplete="email"
               autoFocus
-              {...props.email}
             />
-            <TextField
+            <Field
+              name="password"
+              component={TextField}
               margin="normal"
-              required
               fullWidth
               type="password"
               autoComplete="current-password"
-              {...props.password}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -131,7 +131,7 @@ const SignIn = () => {
                 </Link>
               </Grid>
             </Grid>
-          </Box>
+          </Form>
         </Box>
       </Grid>
       <Snackbar

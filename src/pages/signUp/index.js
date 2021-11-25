@@ -1,5 +1,151 @@
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormHelperText from "@mui/material/FormHelperText";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { Form, Field, createForm } from "../../components/form";
+
+const signUpForm = createForm([
+  { field: "firstName", label: "First Name", required: true },
+  { field: "lastName", label: "Last Name" },
+  { field: "email", label: "Email Address", required: true },
+  { field: "password", label: "Password", required: true },
+  { field: "role", label: "Role", required: true },
+]);
+
 const SignUp = () => {
-  return <div>SignUp</div>;
+  const handleSubmit = async (e, validateForm) => {
+    e.preventDefault();
+    try {
+      // eslint-disable-next-line no-unused-vars
+      const data = await validateForm();
+    } catch (err) {}
+  };
+
+  return (
+    <Container component="main" maxWidth="sm">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+        <Form
+          form={signUpForm}
+          component="form"
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{ mt: 3 }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Field
+                component={TextField}
+                autoComplete="given-name"
+                name="firstName"
+                fullWidth
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Field
+                component={TextField}
+                fullWidth
+                name="lastName"
+                autoComplete="family-name"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Field
+                component={TextField}
+                required
+                fullWidth
+                name="email"
+                autoComplete="email"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Field
+                component={TextField}
+                fullWidth
+                name="password"
+                type="password"
+                autoComplete="new-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Field
+                name="role"
+                component={({
+                  error,
+                  helperText,
+                  required,
+                  label,
+                  ...props
+                }) => (
+                  <FormControl fullWidth error={error}>
+                    <InputLabel id="signup-role-label" required={required}>
+                      {label}
+                    </InputLabel>
+                    <Select
+                      {...props}
+                      labelId="signup-role-label"
+                      label={label}
+                    >
+                      <MenuItem value={0}>Teacher</MenuItem>
+                      <MenuItem value={1}>Student</MenuItem>
+                    </Select>
+                    <FormHelperText>{helperText}</FormHelperText>
+                  </FormControl>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                label="I want to receive notification via email."
+              />
+            </Grid>
+          </Grid>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Sign Up
+          </Button>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="#" variant="body2">
+                Already have an account? Sign in
+              </Link>
+            </Grid>
+          </Grid>
+        </Form>
+      </Box>
+    </Container>
+  );
 };
 
 export default SignUp;

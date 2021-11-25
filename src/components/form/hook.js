@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { isRegexp, isString } from "../utils";
+import { useState, createContext } from "react";
+import { isRegexp, isString, capitalizeFirstLetter } from "../../common/utils";
+
+const formContext = createContext();
+
+const { Provider } = formContext;
 
 const useFormControls = ({ defaultValues, triggers, validators, others }) => {
   const [values, setValues] = useState(defaultValues);
@@ -38,7 +42,6 @@ const useFormControls = ({ defaultValues, triggers, validators, others }) => {
       [name]: value,
     };
     setValues(newValues);
-
     validate(newValues, { [name]: value });
   };
 
@@ -78,12 +81,13 @@ export const createForm = (configs) => {
   const others = {};
 
   configs.forEach((config) => {
-    const { field, defaultValue = "", label } = config;
+    const { field, defaultValue = "", label, required } = config;
     let { trigger } = config;
 
     defaultValues[field] = defaultValue;
     validators[field] = parseValidator(config);
     others[field] = {
+      required: !!required,
       id: field,
       name: field,
       label: label || field,
@@ -92,9 +96,7 @@ export const createForm = (configs) => {
     if (!trigger) trigger = ["change"];
     if (isString(trigger)) trigger = [trigger];
 
-    triggers[field] = trigger.map(
-      (t) => `on${t.replace(/^./, (s) => s.toUpperCase())}`
-    );
+    triggers[field] = trigger.map((t) => `on${capitalizeFirstLetter(t)}`);
   });
 
   return {
@@ -108,19 +110,19 @@ export const createForm = (configs) => {
 const checkRequired = (value, field) => {
   return value !== undefined && value !== null && value !== ""
     ? ""
-    : `${field} must be required!`;
+    : `${capitalizeFirstLetter(field)} is required!`;
 };
 
 const generateCheckMax = (limit) => (value, field) => {
   return value && value.length <= limit
     ? ""
-    : `${field}'s max length is ${limit}!`;
+    : `${capitalizeFirstLetter(field)}'s max length is ${limit}!`;
 };
 
 const generateCheckMin = (limit) => (value, field) => {
   return value && value.length >= limit
     ? ""
-    : `${field}'s min length is ${limit}!`;
+    : `${capitalizeFirstLetter(field)}'s min length is ${limit}!`;
 };
 
 const generateCheckRegexp = (regex, message) => (value, field) => {
@@ -172,5 +174,7 @@ function parseValidator(config) {
     return message;
   };
 }
+
+export { formContext, Provider };
 
 export default useFormControls;

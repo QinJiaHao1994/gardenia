@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
