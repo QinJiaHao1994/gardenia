@@ -6,11 +6,13 @@ const useApi = (api) => {
   const [loading, setLoading] = useState(false);
 
   const wrappedApi = async (...args) => {
+    setError(null);
     setLoading(true);
     try {
       const data = await api(...args);
       setValue(data);
       setError(null);
+      return data;
     } catch (error) {
       setValue(null);
       setError(error.message);

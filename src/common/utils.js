@@ -11,3 +11,11 @@ export const isString = (val) =>
 
 export const capitalizeFirstLetter = (val) =>
   val.replace(/^./, (s) => s.toUpperCase());
+
+export const collectIdsAndDocs = (doc) => ({
+  id: doc.id,
+  ...doc.data(),
+});
+
+export const getDisplayName = (Component) =>
+  Component.displayName || Component.name || "Component";

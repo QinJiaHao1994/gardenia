@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import theme from "./app/theme";
+import "./app/firebase";
+import { store } from "./store";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
-import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
 

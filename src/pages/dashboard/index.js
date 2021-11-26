@@ -8,6 +8,9 @@ import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
+import withUserAuthentication from "../../store/user/userAuth";
+import { withLocation, withNavigation, combineHocs } from "../../common/hocs";
+// import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -48,4 +51,8 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default combineHocs(
+  withLocation,
+  withNavigation,
+  withUserAuthentication
+)(Dashboard);

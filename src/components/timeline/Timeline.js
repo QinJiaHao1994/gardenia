@@ -9,7 +9,7 @@ const Timeline = () => {
         flexDirection: "column",
       }}
     >
-      CourseList
+      Timeline
     </Paper>
   );
 };

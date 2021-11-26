@@ -1,12 +1,14 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -16,6 +18,9 @@ import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Form, Field, createForm } from "../../components/form";
+import useApi from "../../common/hooks/useApi";
+import { signup } from "../../store/user/userApi";
+
 import Logo from "../../images/logo.jpg";
 
 const signUpForm = createForm([
@@ -27,12 +32,25 @@ const signUpForm = createForm([
 ]);
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [{ loading, error }, api] = useApi(signup);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(!!error);
+  }, [error]);
+
+  const handleClose = () => setOpen(false);
+
   const handleSubmit = async (e, validateForm) => {
     e.preventDefault();
     try {
-      // eslint-disable-next-line no-unused-vars
       const data = await validateForm();
-    } catch (err) {}
+      await api(data);
+      navigate(`/`);
+    } catch (err) {
+      // console.log(err, typeof err);
+    }
   };
 
   return (
@@ -130,6 +148,7 @@ const SignUp = () => {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={loading}
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
@@ -143,6 +162,19 @@ const SignUp = () => {
           </Grid>
         </Form>
       </Box>
+      <Snackbar
+        open={open}
+        onClose={handleClose}
+        autoHideDuration={2000}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

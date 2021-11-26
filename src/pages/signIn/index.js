@@ -13,10 +13,9 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-
 import { Form, Field, createForm } from "../../components/form";
 import useApi from "../../common/hooks/useApi";
-import { signin } from "../../features/user/userApi";
+import { signin } from "../../store/user/userApi";
 import Image from "../../images/loginBg.jpg";
 import Logo from "../../images/logo.jpg";
 
@@ -26,11 +25,11 @@ const signInForm = createForm([
 ]);
 
 const SignIn = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const [{ loading, error }, api] = useApi(signin);
   const [open, setOpen] = useState(false);
   let [searchParams] = useSearchParams();
-  const to = searchParams.get("to") || "";
+  const to = searchParams.get("to") || "/";
 
   useEffect(() => {
     setOpen(!!error);
@@ -43,7 +42,7 @@ const SignIn = () => {
     try {
       const data = await validateForm();
       await api(data);
-      navigate(`/${to}`);
+      navigate(to);
     } catch (err) {}
   };
 
