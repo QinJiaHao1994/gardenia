@@ -18,7 +18,7 @@ import { Form, Field, createForm } from "../../components/form";
 import useApi from "../../common/hooks/useApi";
 import { signin } from "../../features/user/userApi";
 import Image from "../../images/loginBg.jpg";
-import Logo from "../../images/logo.jpeg";
+import Logo from "../../images/logo.jpg";
 
 const signInForm = createForm([
   { field: "email", label: "Email Address", required: true },
@@ -76,10 +76,7 @@ const SignIn = () => {
             alignItems: "center",
           }}
         >
-          <Avatar
-            sx={{ m: 1, bgcolor: "secondary.main", width: 64, height: 64 }}
-            src={Logo}
-          />
+          <Avatar sx={{ m: 1, width: 64, height: 64 }} src={Logo} />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -119,15 +116,10 @@ const SignIn = () => {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link component={RouterLink} to="/forget" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
+            <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link component={RouterLink} to="/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>

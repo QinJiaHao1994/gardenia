@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import theme from "./app/theme";
 import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+
 import { store } from "./app/store";
 import { Provider } from "react-redux";
 import * as serviceWorker from "./serviceWorker";
@@ -12,6 +14,7 @@ ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
+        <CssBaseline />
         <App />
       </Provider>
     </ThemeProvider>

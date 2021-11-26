@@ -6,16 +6,17 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { Form, Field, createForm } from "../../components/form";
+import Logo from "../../images/logo.jpg";
 
 const signUpForm = createForm([
   { field: "firstName", label: "First Name", required: true },
@@ -44,9 +45,7 @@ const SignUp = () => {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
+        <Avatar sx={{ m: 1, width: 64, height: 64 }} src={Logo} />
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
@@ -137,7 +136,7 @@ const SignUp = () => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="/signin" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
