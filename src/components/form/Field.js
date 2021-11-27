@@ -1,5 +1,5 @@
 import { createElement, useContext, memo } from "react";
-import { formContext } from "./hook";
+import formContext from "./formContext";
 
 const MemoField = memo(({ component, ...props }) => {
   return createElement(component, { ...props });

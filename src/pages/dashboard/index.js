@@ -1,41 +1,20 @@
 import { Outlet } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../store/user/userSlice";
+import { auth } from "../../app/firebase";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Badge from "@mui/material/Badge";
-import Stack from "@mui/material/Stack";
+import AppBar from "../../components/appbar";
 import Box from "@mui/material/Box";
-import Avatar from "@mui/material/Avatar";
 import withUserAuthentication from "../../store/user/userAuth";
 import { withLocation, withNavigation, combineHocs } from "../../common/hocs";
 // import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const user = useSelector(selectUser);
+
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="absolute">
-        <Toolbar>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            sx={{ flexGrow: 1 }}
-          >
-            Dashboard
-          </Typography>
-          <Stack direction="row" spacing={2}>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <Avatar>Q</Avatar>
-          </Stack>
-        </Toolbar>
-      </AppBar>
+      <AppBar user={user} signOut={() => auth.signOut()} />
       <Box
         component="main"
         sx={{

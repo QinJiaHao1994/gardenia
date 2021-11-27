@@ -29,6 +29,12 @@ const signUpForm = createForm([
   { field: "email", label: "Email Address", required: true },
   { field: "password", label: "Password", required: true },
   { field: "role", label: "Role", required: true },
+  {
+    field: "receiveEmail",
+    label: "I want to receive notification via email.",
+    defaultValue: false,
+    keyOfValue: "checked",
+  },
 ]);
 
 const SignUp = () => {
@@ -138,9 +144,16 @@ const SignUp = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive notification via email."
+              <Field
+                name="receiveEmail"
+                component={({ error, helperText, label, ...props }) => {
+                  return (
+                    <FormControlLabel
+                      control={<Checkbox {...props} color="primary" />}
+                      label={label}
+                    />
+                  );
+                }}
               />
             </Grid>
           </Grid>

@@ -3,8 +3,7 @@ import { getUser } from "./userApi";
 
 const initialState = {
   user: null,
-  //'idle' | 'loading' | 'succeeded' | 'failed'
-  status: "idle",
+  status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
 
@@ -38,6 +37,7 @@ export const userSlice = createSlice({
 export const { set } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
+export const selectStatus = (state) => state.user.status;
 // export const selectIsLoading = (state) => state.user.status === "loading";
 
 export default userSlice.reducer;

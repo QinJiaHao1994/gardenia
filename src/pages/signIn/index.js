@@ -16,18 +16,25 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Form, Field, createForm } from "../../components/form";
 import useApi from "../../common/hooks/useApi";
 import { signin } from "../../store/user/userApi";
+
 import Image from "../../images/loginBg.jpg";
 import Logo from "../../images/logo.jpg";
 
 const signInForm = createForm([
   { field: "email", label: "Email Address", required: true },
   { field: "password", label: "Password", required: true },
+  {
+    field: "remember",
+    label: "Remember me",
+    defaultValue: true,
+    keyOfValue: "checked",
+  },
 ]);
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [{ loading, error }, api] = useApi(signin);
   const [open, setOpen] = useState(false);
+  const [{ loading, error }, api] = useApi(signin);
   let [searchParams] = useSearchParams();
   const to = searchParams.get("to") || "/";
 
@@ -43,7 +50,9 @@ const SignIn = () => {
       const data = await validateForm();
       await api(data);
       navigate(to);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -102,9 +111,16 @@ const SignIn = () => {
               type="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+            <Field
+              name="remember"
+              component={({ error, helperText, label, ...props }) => {
+                return (
+                  <FormControlLabel
+                    control={<Checkbox {...props} color="primary" />}
+                    label={label}
+                  />
+                );
+              }}
             />
             <Button
               type="submit"

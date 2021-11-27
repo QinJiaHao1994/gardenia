@@ -1,11 +1,12 @@
-import { useState, createContext } from "react";
-import { isRegexp, isString, capitalizeFirstLetter } from "../../common/utils";
+import { useState } from "react";
 
-const formContext = createContext();
-
-const { Provider } = formContext;
-
-const useFormControls = ({ defaultValues, triggers, validators, others }) => {
+const useFormControls = ({
+  defaultValues,
+  keyOfValues,
+  triggers,
+  validators,
+  others,
+}) => {
   const [values, setValues] = useState(defaultValues);
   const [errors, setErrors] = useState({});
 
@@ -30,13 +31,12 @@ const useFormControls = ({ defaultValues, triggers, validators, others }) => {
     };
 
     setErrors(newErrors);
-
     return newErrors;
   };
 
-  const handleInputValue = (e) => {
+  const handleValueChange = async (name, value) => {
     // this function will be triggered by the text field's onBlur and onChange events
-    const { name, value } = e.target;
+
     const newValues = {
       ...values,
       [name]: value,
@@ -57,124 +57,23 @@ const useFormControls = ({ defaultValues, triggers, validators, others }) => {
   };
 
   const props = Object.keys(values).reduce((acc, field) => {
+    const keyOfValue = keyOfValues[field];
     acc[field] = {
       ...others[field],
-      value: values[field],
+      [keyOfValue]: values[field],
       error: !!errors[field],
       helperText: errors[field],
     };
 
     triggers[field].forEach((trigger) => {
-      acc[field][trigger] = handleInputValue;
+      acc[field][trigger] = (e) =>
+        handleValueChange(e.target.name, e.target[keyOfValue]);
     });
 
     return acc;
   }, {});
 
-  return { props, validateForm };
+  return { props, validateForm, setValues };
 };
-
-export const createForm = (configs) => {
-  const validators = {};
-  const defaultValues = {};
-  const triggers = {};
-  const others = {};
-
-  configs.forEach((config) => {
-    const { field, defaultValue = "", label, required } = config;
-    let { trigger } = config;
-
-    defaultValues[field] = defaultValue;
-    validators[field] = parseValidator(config);
-    others[field] = {
-      required: !!required,
-      id: field,
-      name: field,
-      label: label || field,
-    };
-
-    if (!trigger) trigger = ["change"];
-    if (isString(trigger)) trigger = [trigger];
-
-    triggers[field] = trigger.map((t) => `on${capitalizeFirstLetter(t)}`);
-  });
-
-  return {
-    defaultValues,
-    triggers,
-    validators,
-    others,
-  };
-};
-
-const checkRequired = (value, field) => {
-  return value !== undefined && value !== null && value !== ""
-    ? ""
-    : `${capitalizeFirstLetter(field)} is required!`;
-};
-
-const generateCheckMax = (limit) => (value, field) => {
-  return value && value.length <= limit
-    ? ""
-    : `${capitalizeFirstLetter(field)}'s max length is ${limit}!`;
-};
-
-const generateCheckMin = (limit) => (value, field) => {
-  return value && value.length >= limit
-    ? ""
-    : `${capitalizeFirstLetter(field)}'s min length is ${limit}!`;
-};
-
-const generateCheckRegexp = (regex, message) => (value, field) => {
-  const bool = regex.test(value);
-  if (bool) return "";
-
-  if (isString(message)) {
-    return message;
-  }
-
-  return message(value, field);
-};
-
-const generateCheckFunction =
-  (func, message) => async (value, field, values) => {
-    const bool = await func(value, field, values);
-    if (bool) return "";
-
-    if (isString(message)) {
-      return message;
-    }
-
-    return message(value, field);
-  };
-
-function parseValidator(config) {
-  const rules = [];
-  if (config.required) rules.push(checkRequired);
-  if (config.max) rules.push(generateCheckMax(config.max));
-  if (config.min) rules.push(generateCheckMin(config.min));
-  if (config.rules)
-    config.rules.forEach((rule) => {
-      const { validator, message } = rule;
-      if (isRegexp(validator)) {
-        rules.push(generateCheckRegexp, message);
-      } else {
-        rules.push(generateCheckFunction, message);
-      }
-    });
-
-  return (value, field, values) => {
-    let message = "";
-    for (const rule of rules) {
-      if ((message = rule(value, field, values)) !== "") {
-        break;
-      }
-    }
-
-    return message;
-  };
-}
-
-export { formContext, Provider };
 
 export default useFormControls;
