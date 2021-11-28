@@ -15,6 +15,7 @@ const createForm = (configs) => {
       label,
       required,
       keyOfValue = "value",
+      transform,
     } = config;
 
     let { trigger } = config;
@@ -22,6 +23,7 @@ const createForm = (configs) => {
     defaultValues[field] = defaultValue;
     validators[field] = parseValidator(config);
     others[field] = {
+      transform,
       required: !!required,
       id: field,
       name: field,

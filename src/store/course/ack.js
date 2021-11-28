@@ -2,9 +2,6 @@
 import {
   doc,
   getDoc,
-  addDoc,
-  // setDoc,
-  updateDoc,
   collection,
   query,
   where,
@@ -19,9 +16,28 @@ import {
 } from "../../common/utils";
 
 class CourseApi {
-  uid;
+  static studentApi = new StudentApi();
+  static teacherApi = new TeacherApi();
 
-  async getCourseByid(id) {
+  setRole(role) {
+    if (role === 0) return this.studentApi;
+    return this.teacherApi;
+    // let Api = null;
+    // switch (role) {
+    //   case 0:
+    //     Api = TeacherApi;
+    //     break;
+    //   case 1:
+    //     Api = StudentApi;
+    //     break;
+    //   default:
+    //     Api = StudentApi;
+    //     break;
+    // }
+    // return Api;
+  }
+
+  static async _getCourseByid(id) {
     const docRef = doc(db, "courses", id).withConverter(courseConverter);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
@@ -32,15 +48,15 @@ class CourseApi {
 }
 
 class StudentApi extends CourseApi {
-  async _collectCourseIds() {
+  static async _collectCourseIds(uid) {
     const courseEnrollRef = collection(db, "course_enroll");
-    const q = query(courseEnrollRef, where("user_id", "==", this.uid));
+    const q = query(courseEnrollRef, where("user_id", "==", uid));
     const querySnapshot = await getDocs(q);
     const course_ids = querySnapshot.docs.map((doc) => doc.data().course_id);
     return course_ids;
   }
 
-  async _getCoursesByIds(ids) {
+  static async _getCoursesByIds(ids) {
     const coursesRef = collection(db, "courses").withConverter(courseConverter);
     const q = query(coursesRef, where(documentId(), "in", ids));
     const querySnapshot = await getDocs(q);
@@ -48,44 +64,22 @@ class StudentApi extends CourseApi {
     return courses;
   }
 
-  async getCourseByid(id) {}
+  static async;
 
-  async getCourses() {
-    const course_ids = await this._collectCourseIds();
+  static async getCoursesByUid(uid) {
+    const course_ids = await this._collectCourseIds(uid);
     const courses = await this._getCoursesByIds(course_ids);
     return courses;
   }
 }
 
 class TeacherApi extends CourseApi {
-  async getCourses() {
+  static async getCoursesByUid(uid) {
     const coursesRef = collection(db, "courses").withConverter(courseConverter);
-    const q = query(coursesRef, where("teacher_id", "==", this.uid));
+    const q = query(coursesRef, where("teacher_id", "==", uid));
     const querySnapshot = await getDocs(q);
     const courses = querySnapshot.docs.map(collectIdsAndDocs);
     return courses;
-  }
-
-  async getCourseByid(id) {
-    const course = await super.getCourseByid(id);
-    const { teacherId } = course;
-    if (teacherId !== this.uid)
-      throw new Error("The course does not belong to this teacher");
-    return course;
-  }
-
-  async createCourse(formData) {
-    const data = {
-      ...formData,
-      teacherId: this.uid,
-    };
-    const coursesRef = collection(db, "courses").withConverter(courseConverter);
-    return await addDoc(coursesRef, data);
-  }
-
-  async updateCourse(id, data) {
-    const docRef = doc(db, "courses", id).withConverter(courseConverter);
-    await updateDoc(docRef, data);
   }
 }
 
@@ -99,20 +93,4 @@ const courseConverter = {
   },
 };
 
-const courseApiFactory = () => {
-  const studentApi = new StudentApi();
-  const teacherApi = new TeacherApi();
-
-  const proxy = {
-    setRole({ id, role }) {
-      const api = role === 0 ? teacherApi : studentApi;
-      api.uid = id;
-      Object.setPrototypeOf(proxy, api);
-      return proxy;
-    },
-  };
-
-  return proxy;
-};
-
-export default courseApiFactory();
+export default CourseApi;

@@ -1,5 +1,11 @@
 export const noop = () => {};
 
+export const isSameType = (a, b) =>
+  Object.prototype.toString.call(a) === Object.prototype.toString.call(b);
+
+export const isDate = (val) =>
+  Object.prototype.toString.call(val) === "[object Date]";
+
 export const isRegexp = (val) =>
   Object.prototype.toString.call(val) === "[object RegExp]";
 
@@ -66,3 +72,32 @@ class Storage {
 }
 
 export const storage = new Storage();
+
+export const selectApi =
+  (api, key) =>
+  (...args) =>
+    api[key](...args);
+
+export const diff = (after, before) => {
+  const keys = new Set([...Object.keys(after), ...Object.keys(before)]);
+  const result = [...keys].reduce((acc, key) => {
+    if (!equals(after[key], before[key])) {
+      acc[key] = after[key];
+    }
+    return acc;
+  }, {});
+
+  return result;
+};
+
+// ! Shallow comparison
+const equals = (after, before) => {
+  const afterisEmpty = after === undefined || after === null;
+  const beforeisEmpty = before === undefined || before === null;
+  if (afterisEmpty && beforeisEmpty) return true;
+  if (afterisEmpty || beforeisEmpty) return false;
+
+  if (!isSameType(after, before)) return false;
+  if (isDate(after)) return after.getTime() === before.getTime();
+  return after === before;
+};

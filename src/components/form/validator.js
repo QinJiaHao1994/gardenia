@@ -9,20 +9,19 @@ function parseValidator(config) {
     config.rules.forEach((rule) => {
       const { validator, message } = rule;
       if (isRegexp(validator)) {
-        rules.push(generateCheckRegexp, message);
+        rules.push(generateCheckRegexp(validator, message));
       } else {
-        rules.push(generateCheckFunction, message);
+        rules.push(generateCheckFunction(validator, message));
       }
     });
 
-  return (value, field, values) => {
+  return async (value, field, values) => {
     let message = "";
     for (const rule of rules) {
-      if ((message = rule(value, field, values)) !== "") {
+      if ((message = await rule(value, field, values)) !== "") {
         break;
       }
     }
-
     return message;
   };
 }

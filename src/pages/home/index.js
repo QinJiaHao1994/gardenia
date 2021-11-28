@@ -5,27 +5,21 @@ import Announcement from "../../components/announcement";
 import { CourseOverview } from "../../components/course";
 import Timeline from "../../components/timeline";
 import { useSelector, useDispatch } from "react-redux";
-import { withIdentity, withUser } from "../../store/user/userHoc";
+import { withIdentity } from "../../store/user/userHoc";
 import {
   fetchCoursesAsync,
   selectCourses,
 } from "../../store/course/courseSlice";
 import { useTitle } from "../../common/hooks";
-import { compose } from "../../common/hocs";
 
-const Home = ({ user, isStudent }) => {
+const Home = ({ isStudent }) => {
   useTitle("Dashboard");
   const courses = useSelector(selectCourses);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const { id, role } = user;
-    const data = {
-      id,
-      role,
-    };
-    dispatch(fetchCoursesAsync(data));
-  }, [dispatch, user]);
+    dispatch(fetchCoursesAsync());
+  }, [dispatch]);
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -42,4 +36,4 @@ const Home = ({ user, isStudent }) => {
   );
 };
 
-export default compose(withUser, withIdentity)(Home);
+export default withIdentity(Home);

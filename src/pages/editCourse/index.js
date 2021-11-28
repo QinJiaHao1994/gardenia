@@ -1,5 +1,4 @@
-const EditCourse = () => {
-  return <div>EditCourse</div>;
-};
+import EditCourse from "./EditCourse";
+import EditCourseAuth from "./EditCourseAuth";
 
-export default EditCourse;
+export { EditCourse, EditCourseAuth };

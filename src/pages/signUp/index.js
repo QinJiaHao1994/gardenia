@@ -55,9 +55,7 @@ const SignUp = () => {
       const data = await validateForm();
       await api(data);
       navigate(`/`);
-    } catch (err) {
-      // console.log(err, typeof err);
-    }
+    } catch (err) {}
   };
 
   return (

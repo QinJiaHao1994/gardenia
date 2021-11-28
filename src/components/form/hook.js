@@ -7,6 +7,7 @@ const useFormControls = ({
   validators,
   others,
 }) => {
+  const [modified, setModified] = useState(false);
   const [values, setValues] = useState(defaultValues);
   const [errors, setErrors] = useState({});
 
@@ -34,15 +35,21 @@ const useFormControls = ({
     return newErrors;
   };
 
-  const handleValueChange = async (name, value) => {
+  const handleValueChange = async (name, value, transform = (val) => val) => {
     // this function will be triggered by the text field's onBlur and onChange events
+    const fieldValues = { [name]: transform(value) };
 
     const newValues = {
       ...values,
-      [name]: value,
+      ...fieldValues,
     };
+
+    if (!modified) {
+      setModified(true);
+    }
+
     setValues(newValues);
-    validate(newValues, { [name]: value });
+    validate(newValues, fieldValues);
   };
 
   // this function will be triggered by the submit event
@@ -58,8 +65,11 @@ const useFormControls = ({
 
   const props = Object.keys(values).reduce((acc, field) => {
     const keyOfValue = keyOfValues[field];
+
+    const { transform, ...other } = others[field];
+
     acc[field] = {
-      ...others[field],
+      ...other,
       [keyOfValue]: values[field],
       error: !!errors[field],
       helperText: errors[field],
@@ -67,13 +77,13 @@ const useFormControls = ({
 
     triggers[field].forEach((trigger) => {
       acc[field][trigger] = (e) =>
-        handleValueChange(e.target.name, e.target[keyOfValue]);
+        handleValueChange(e.target.name, e.target[keyOfValue], transform);
     });
 
     return acc;
   }, {});
 
-  return { props, validateForm, setValues };
+  return { props, validateForm, setValues, modified };
 };
 
 export default useFormControls;

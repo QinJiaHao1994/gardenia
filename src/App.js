@@ -7,7 +7,8 @@ const Home = lazy(() => import("./pages/home"));
 const SignIn = lazy(() => import("./pages/signin"));
 const SignUp = lazy(() => import("./pages/signup"));
 const CreateCourse = lazy(() => import("./pages/createCourse"));
-const EditCourse = lazy(() => import("./pages/editCourse"));
+const EditCourseAuth = lazy(() => import("./pages/editCourse/EditCourseAuth"));
+const EditCourse = lazy(() => import("./pages/editCourse/EditCourse"));
 const CourseDetail = lazy(() => import("./pages/courseDetail"));
 
 function App() {
@@ -21,7 +22,9 @@ function App() {
             <Route index element={<Home />} />
             <Route path="course/:courseId" element={<CourseDetail />} />
             <Route path="create-course" element={<CreateCourse />} />
-            <Route path="edit-course/:courseId" element={<EditCourse />} />
+            <Route path="edit-course" element={<EditCourseAuth />}>
+              <Route path=":courseId" element={<EditCourse />} />
+            </Route>
           </Route>
           <Route path="*" element={NoMatch} />
         </Routes>

@@ -50,9 +50,7 @@ const SignIn = () => {
       const data = await validateForm();
       await api(data);
       navigate(to);
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   return (

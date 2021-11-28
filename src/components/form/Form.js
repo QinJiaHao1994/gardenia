@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Provider } from "./formContext";
 
 const Form = ({ form, initialValues, children, onSubmit, ...forwardProps }) => {
-  const { props, validateForm, setValues } = useFormControls(form);
+  const { props, validateForm, setValues, modified } = useFormControls(form);
 
   useEffect(() => {
     if (!initialValues) return;
@@ -13,10 +13,11 @@ const Form = ({ form, initialValues, children, onSubmit, ...forwardProps }) => {
       ...value,
       ...initialValues,
     }));
-  }, [initialValues, setValues]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = (e) => {
-    onSubmit(e, validateForm);
+    onSubmit(e, validateForm, modified);
   };
 
   return (

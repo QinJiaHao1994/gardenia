@@ -3,3 +3,4 @@ import Field from "./Field";
 import createForm from "./createForm";
 
 export { Form, Field, createForm };
+export * from "./components";

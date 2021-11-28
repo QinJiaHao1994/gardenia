@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUser } from "./userApi";
+import courseApi from "../course/courseApi";
 
 const initialState = {
   user: null,
@@ -24,8 +25,10 @@ export const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchUserAsync.fulfilled, (state, action) => {
+        const user = action.payload;
         state.status = "succeeded";
-        state.user = action.payload;
+        state.user = user;
+        courseApi.setRole(user);
       })
       .addCase(fetchUserAsync.rejected, (state, action) => {
         state.status = "failed";
