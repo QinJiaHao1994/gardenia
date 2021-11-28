@@ -1,11 +1,15 @@
 import react from "react";
 import { connect } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
-import { fetchUserAsync, selectStatus } from "./userSlice";
-import { auth } from "../../app/firebase";
-import { getDisplayName } from "../../common/utils";
+import { fetchUserAsync, selectStatus, selectUser } from "../userSlice";
+import { auth } from "../../../app/firebase";
+import { getDisplayName } from "../../../common/utils";
+import { withLocation, withNavigation, compose } from "../../../common/hocs";
 
-const mapStateToProps = (state) => ({ status: selectStatus(state) });
+const mapStateToProps = (state) => ({
+  user: selectUser(state),
+  status: selectStatus(state),
+});
 
 const withUserAuthentication = (Component) => {
   class WrappedComponent extends react.Component {
@@ -37,8 +41,9 @@ const withUserAuthentication = (Component) => {
     }
 
     render() {
-      const { location, navigate, dispatch, ...forwardProps } = this.props;
-      return <Component {...forwardProps} />;
+      const { user, location, navigate, dispatch, status, ...forwardProps } =
+        this.props;
+      return user && <Component {...forwardProps} />;
     }
   }
 
@@ -49,4 +54,4 @@ const withUserAuthentication = (Component) => {
   return connect(mapStateToProps)(WrappedComponent);
 };
 
-export default withUserAuthentication;
+export default compose(withLocation, withNavigation, withUserAuthentication);

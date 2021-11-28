@@ -1,5 +1,5 @@
 import withLocation from "./withLocation";
 import withNavigation from "./withNavigation";
-import { combineHocs } from "./helper";
+import { compose } from "./helper";
 
-export { withLocation, withNavigation, combineHocs };
+export { withLocation, withNavigation, compose };

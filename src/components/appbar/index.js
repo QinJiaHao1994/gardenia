@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
@@ -10,6 +11,11 @@ import MenuItem from "@mui/material/MenuItem";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Logout from "@mui/icons-material/Logout";
+import TableViewIcon from "@mui/icons-material/TableView";
+import Link from "../../components/link";
 import { extractAbbr } from "../../common/utils";
 
 const ResponsiveAppBar = ({ user, signOut }) => {
@@ -26,15 +32,16 @@ const ResponsiveAppBar = ({ user, signOut }) => {
   return (
     <AppBar position="absolute">
       <Toolbar>
-        <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
-          noWrap
-          sx={{ flexGrow: 1 }}
-        >
-          Dashboard
-        </Typography>
+        <Link to="/" sx={{ flexGrow: 1 }}>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="primary.contrastText"
+            noWrap
+          >
+            Dashboard
+          </Typography>
+        </Link>
         <Stack direction="row" spacing={2}>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -49,24 +56,57 @@ const ResponsiveAppBar = ({ user, signOut }) => {
           <Menu
             sx={{ mt: "45px" }}
             id="menu-appbar"
-            anchorEl={anchor}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
             keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                overflow: "visible",
+                filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                mt: 1.5,
+                "& .MuiAvatar-root": {
+                  width: 32,
+                  height: 32,
+                  ml: -0.5,
+                  mr: 1,
+                },
+                "&:before": {
+                  content: '""',
+                  display: "block",
+                  position: "absolute",
+                  top: 0,
+                  right: 14,
+                  width: 10,
+                  height: 10,
+                  bgcolor: "background.paper",
+                  transform: "translateY(-50%) rotate(45deg)",
+                  zIndex: 0,
+                },
+              },
             }}
+            transformOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorOrigin={{ horizontal: "right", vertical: "top" }}
+            anchorEl={anchor}
             open={!!anchor}
             onClose={handleCloseUserMenu}
           >
             <MenuItem>
-              <Typography textAlign="center">Profile</Typography>
+              <ListItemIcon>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              Profile
             </MenuItem>
+            <MenuItem>
+              <ListItemIcon>
+                <TableViewIcon />
+              </ListItemIcon>
+              Grade
+            </MenuItem>
+            <Divider />
             <MenuItem onClick={signOut}>
-              <Typography textAlign="center">Logout</Typography>
+              <ListItemIcon>
+                <Logout fontSize="small" />
+              </ListItemIcon>
+              Logout
             </MenuItem>
           </Menu>
         </Stack>

@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
@@ -5,14 +7,11 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import { Link as RouterLink } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import Link from "../../components/link";
 import { Form, Field, createForm } from "../../components/form";
 import useApi from "../../common/hooks/useApi";
 import { signin } from "../../store/user/userApi";
@@ -133,7 +132,7 @@ const SignIn = () => {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={RouterLink} to="/signup" variant="body2">
+                <Link to="/signup" variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>

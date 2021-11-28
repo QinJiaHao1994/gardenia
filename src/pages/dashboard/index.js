@@ -1,19 +1,37 @@
+import { memo, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../store/user/userSlice";
 import { auth } from "../../app/firebase";
+import Backdrop from "@mui/material/Backdrop";
 import Toolbar from "@mui/material/Toolbar";
-import AppBar from "../../components/appbar";
 import Box from "@mui/material/Box";
-import withUserAuthentication from "../../store/user/userAuth";
-import { withLocation, withNavigation, combineHocs } from "../../common/hocs";
-// import { Link } from "react-router-dom";
+import SpeedDial from "@mui/material/SpeedDial";
+import SpeedDialIcon from "@mui/material/SpeedDialIcon";
+import SpeedDialAction from "@mui/material/SpeedDialAction";
+import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
+import AppBar from "../../components/appbar";
+import {
+  withUserAuthentication,
+  withUser,
+  withIdentity,
+} from "../../store/user/userHoc";
+import { withNavigation, compose } from "../../common/hocs";
 
-const Dashboard = () => {
-  const user = useSelector(selectUser);
+const Dashboard = ({ user, isTeacher, navigate }) => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const handleCreateCourse = () => {
+    handleClose();
+    navigate("/create-course");
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
+      <Backdrop
+        sx={{ zIndex: (theme) => theme.zIndex.appBar + 1 }}
+        open={open}
+      />
       <AppBar user={user} signOut={() => auth.signOut()} />
       <Box
         component="main"
@@ -26,12 +44,38 @@ const Dashboard = () => {
         <Toolbar />
         <Outlet />
       </Box>
+      {isTeacher && (
+        <SpeedDial
+          ariaLabel="Operations"
+          sx={{
+            position: "fixed",
+            bottom: 48,
+            right: 48,
+            zIndex: (theme) => theme.zIndex.appBar + 2,
+          }}
+          icon={<SpeedDialIcon />}
+          onClose={handleClose}
+          onOpen={handleOpen}
+          open={open}
+        >
+          <SpeedDialAction
+            classes={{
+              staticTooltipLabel: "w165",
+            }}
+            icon={<FileCopyIcon />}
+            tooltipTitle="Create Course"
+            tooltipOpen
+            onClick={handleCreateCourse}
+          />
+        </SpeedDial>
+      )}
     </Box>
   );
 };
 
-export default combineHocs(
-  withLocation,
-  withNavigation,
-  withUserAuthentication
-)(Dashboard);
+export default compose(
+  withUserAuthentication,
+  withUser,
+  withIdentity,
+  withNavigation
+)(memo(Dashboard));

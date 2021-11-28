@@ -3,14 +3,36 @@ import Grid from "@mui/material/Grid";
 import Announcement from "../../components/announcement";
 import { CourseOverview } from "../../components/course";
 import Timeline from "../../components/timeline";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from "../../store/user/userSlice";
+import { withIdentity } from "../../store/user/userHoc";
+import {
+  fetchCoursesAsync,
+  selectCourses,
+} from "../../store/course/courseSlice";
 
-const Home = () => {
+const Home = ({ isStudent }) => {
+  const user = useSelector(selectUser);
+  const courses = useSelector(selectCourses);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // if (!user) return;
+    const { id, role } = user;
+    const data = {
+      id,
+      role,
+    };
+    dispatch(fetchCoursesAsync(data));
+  }, [dispatch, user]);
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
         <Grid item xl={8}>
           <Announcement />
-          <CourseOverview />
+          <CourseOverview courses={courses} readOnly={isStudent} />
         </Grid>
         <Grid item xl={4}>
           <Timeline />
@@ -20,4 +42,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withIdentity(Home);

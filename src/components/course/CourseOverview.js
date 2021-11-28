@@ -1,10 +1,20 @@
+import { useState, useMemo } from "react";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
-
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import CourseList from "./CourseList";
+import { createFilters } from "./utils";
 
-const CourseOverview = () => {
+const CourseOverview = ({ courses, readOnly }) => {
+  const [index, setIndex] = useState(0);
+  const handleChange = (e) => setIndex(e.target.value);
+  const filters = useMemo(() => createFilters(courses), [courses]);
+  const filteredCourses = courses.filter(filters[index].predict);
+
   return (
     <Paper
       sx={{
@@ -17,8 +27,17 @@ const CourseOverview = () => {
       <Typography component="p" variant="h6" color="inherit" noWrap>
         Course Overview
       </Typography>
-      <Box>过滤器</Box>
-      <CourseList />
+      <Box>
+        <FormControl size="small">
+          <Select value={index} onChange={handleChange} autoWidth>
+            {filters.map((filter, index) => [
+              <MenuItem value={index}>{filter.label}</MenuItem>,
+              filter.hasDivider ? <Divider /> : null,
+            ])}
+          </Select>
+        </FormControl>
+      </Box>
+      <CourseList courses={filteredCourses} readOnly={readOnly} />
     </Paper>
   );
 };

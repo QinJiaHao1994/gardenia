@@ -7,7 +7,7 @@ const initialState = {
   error: null,
 };
 
-export const fetchUserAsync = createAsyncThunk("posts/fetchUser", getUser);
+export const fetchUserAsync = createAsyncThunk("user/fetchUser", getUser);
 
 export const userSlice = createSlice({
   name: "user",
@@ -29,6 +29,7 @@ export const userSlice = createSlice({
       })
       .addCase(fetchUserAsync.rejected, (state, action) => {
         state.status = "failed";
+        state.user = null;
         state.error = action.error.message;
       });
   },
@@ -38,6 +39,9 @@ export const { set } = userSlice.actions;
 
 export const selectUser = (state) => state.user.user;
 export const selectStatus = (state) => state.user.status;
-// export const selectIsLoading = (state) => state.user.status === "loading";
+export const selectIsTeacher = (state) =>
+  !!state.user.user && state.user.user.role === 0;
+export const selectIsStudent = (state) =>
+  !!state.user.user && state.user.user.role === 1;
 
 export default userSlice.reducer;
