@@ -1,24 +1,24 @@
+import { useEffect } from "react";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Announcement from "../../components/announcement";
 import { CourseOverview } from "../../components/course";
 import Timeline from "../../components/timeline";
-import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser } from "../../store/user/userSlice";
-import { withIdentity } from "../../store/user/userHoc";
+import { withIdentity, withUser } from "../../store/user/userHoc";
 import {
   fetchCoursesAsync,
   selectCourses,
 } from "../../store/course/courseSlice";
+import { useTitle } from "../../common/hooks";
+import { compose } from "../../common/hocs";
 
-const Home = ({ isStudent }) => {
-  const user = useSelector(selectUser);
+const Home = ({ user, isStudent }) => {
+  useTitle("Dashboard");
   const courses = useSelector(selectCourses);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (!user) return;
     const { id, role } = user;
     const data = {
       id,
@@ -42,4 +42,4 @@ const Home = ({ isStudent }) => {
   );
 };
 
-export default withIdentity(Home);
+export default compose(withUser, withIdentity)(Home);

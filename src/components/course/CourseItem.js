@@ -8,7 +8,7 @@ const CourseItem = ({ course, readOnly }) => {
   return (
     <>
       <Link to={`course/${id}`} underline="none">
-        <Typography component="p" variant="h6" color="text.secondary" noWrap>
+        <Typography component="p" variant="h6" color="grey.800" noWrap>
           {`${code}-${name} ${year}-${year + 1}:Semester${semester}`}
         </Typography>
       </Link>

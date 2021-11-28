@@ -13,8 +13,8 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Link from "../../components/link";
 import { Form, Field, createForm } from "../../components/form";
-import useApi from "../../common/hooks/useApi";
 import { signin } from "../../store/user/userApi";
+import { useTitle, useApi } from "../../common/hooks";
 
 import Image from "../../images/loginBg.jpg";
 import Logo from "../../images/logo.jpg";
@@ -31,6 +31,7 @@ const signInForm = createForm([
 ]);
 
 const SignIn = () => {
+  useTitle("Sign in");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [{ loading, error }, api] = useApi(signin);

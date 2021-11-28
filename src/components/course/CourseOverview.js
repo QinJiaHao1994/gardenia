@@ -3,11 +3,13 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CourseList from "./CourseList";
 import { createFilters } from "./utils";
+import Link from "../../components/link";
 
 const CourseOverview = ({ courses, readOnly }) => {
   const [index, setIndex] = useState(0);
@@ -27,7 +29,13 @@ const CourseOverview = ({ courses, readOnly }) => {
       <Typography component="p" variant="h6" color="inherit" noWrap>
         Course Overview
       </Typography>
-      <Box>
+      <Box
+        sx={{
+          mt: 2,
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <FormControl size="small">
           <Select value={index} onChange={handleChange} autoWidth>
             {filters.map((filter, index) => [
@@ -36,6 +44,11 @@ const CourseOverview = ({ courses, readOnly }) => {
             ])}
           </Select>
         </FormControl>
+        {!readOnly && (
+          <Link to="/create-course" underline="none">
+            <Button variant="contained">Create Course</Button>
+          </Link>
+        )}
       </Box>
       <CourseList courses={filteredCourses} readOnly={readOnly} />
     </Paper>
