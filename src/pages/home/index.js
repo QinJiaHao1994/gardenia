@@ -9,17 +9,20 @@ import { withIdentity } from "../../store/user/userHoc";
 import {
   fetchCoursesAsync,
   selectCourses,
+  selectStatus,
 } from "../../store/course/courseSlice";
 import { useTitle } from "../../common/hooks";
 
 const Home = ({ isStudent }) => {
   useTitle("Dashboard");
+  const status = useSelector(selectStatus);
   const courses = useSelector(selectCourses);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (status !== "idle") return;
     dispatch(fetchCoursesAsync());
-  }, [dispatch]);
+  }, [dispatch, status]);
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>

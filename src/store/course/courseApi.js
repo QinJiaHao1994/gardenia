@@ -80,7 +80,9 @@ class TeacherApi extends CourseApi {
       teacherId: this.uid,
     };
     const coursesRef = collection(db, "courses").withConverter(courseConverter);
-    return await addDoc(coursesRef, data);
+    const { id } = await addDoc(coursesRef, data);
+    data.id = id;
+    return data;
   }
 
   async updateCourse(id, data) {

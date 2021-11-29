@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
 import { withOnlyTeacher } from "../../store/user/userHoc";
 import { useApi } from "../../common/hooks";
 import { selectApi } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
+import { addCourse } from "../../store/course/courseSlice";
 const apiWithThis = selectApi(courseApi, "createCourse");
 
 const CreateCourse = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [{ loading, error, finished }, api] = useApi(apiWithThis);
@@ -28,7 +31,8 @@ const CreateCourse = () => {
 
   const handleSumbit = async (data) => {
     try {
-      await api(data);
+      const courseData = await api(data);
+      dispatch(addCourse(courseData));
     } catch (error) {}
   };
 

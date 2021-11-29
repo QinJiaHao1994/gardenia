@@ -15,7 +15,9 @@ const CourseOverview = ({ courses, readOnly }) => {
   const [index, setIndex] = useState(0);
   const handleChange = (e) => setIndex(e.target.value);
   const filters = useMemo(() => createFilters(courses), [courses]);
-  const filteredCourses = courses.filter(filters[index].predict);
+  const filteredCourses = courses
+    .filter(filters[index].predict)
+    .sort((a, b) => a.code.localeCompare(b.code));
 
   return (
     <Paper

@@ -1,7 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import NoMatch from "./pages/noMatch";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 
+import NoMatch from "./pages/noMatch";
 const Dashboard = lazy(() => import("./pages/dashboard"));
 const Home = lazy(() => import("./pages/home"));
 const SignIn = lazy(() => import("./pages/signin"));
@@ -13,7 +15,14 @@ const CourseDetail = lazy(() => import("./pages/courseDetail"));
 
 function App() {
   return (
-    <Suspense fallback={<></>}>
+    <Suspense
+      fallback={
+        <Stack spacing={4}>
+          <Skeleton variant="rectangular" height={64} />
+          <Skeleton variant="rectangular" height="calc(100vh - 100px)" />
+        </Stack>
+      }
+    >
       <Router>
         <Routes>
           <Route path="/signin" element={<SignIn />}></Route>

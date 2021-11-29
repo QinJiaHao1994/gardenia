@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
-import { selectCourseById } from "../../store/course/courseSlice";
+import { selectCourseById, setCourse } from "../../store/course/courseSlice";
 import { useApi } from "../../common/hooks";
 import { selectApi, diff } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
@@ -12,6 +12,7 @@ const EditCourse = () => {
   const { courseId } = useParams();
   const course = useSelector((state) => selectCourseById(state, courseId));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [{ loading, error, finished }, api] = useApi(apiWithThis);
 
@@ -44,6 +45,7 @@ const EditCourse = () => {
     try {
       const diffData = diff(data, initialValues);
       await api(id, diffData);
+      dispatch(setCourse({ id, diffData }));
     } catch (error) {}
   };
 

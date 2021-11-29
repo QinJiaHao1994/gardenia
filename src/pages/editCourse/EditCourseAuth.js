@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate, useParams, Outlet } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import courseApi from "../../store/course/courseApi";
 import { withIdentity } from "../../store/user/userHoc";
-import { setCourse } from "../../store/course/courseSlice";
+import { addCourse, selectCourseById } from "../../store/course/courseSlice";
 import { useApi } from "../../common/hooks";
 import { selectApi } from "../../common/utils";
 
@@ -13,10 +14,11 @@ const apiWithThis = selectApi(courseApi, "getCourseByid");
 
 const EditCourseAuth = ({ isTeacher }) => {
   const { courseId } = useParams();
+  const course = useSelector((state) => selectCourseById(state, courseId));
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [{ finished, error }, api] = useApi(apiWithThis);
+  const [{ error }, api] = useApi(apiWithThis);
 
   useEffect(() => {
     setOpen(!!error);
@@ -30,16 +32,19 @@ const EditCourseAuth = ({ isTeacher }) => {
   useEffect(() => {
     if (!courseId || !isTeacher) {
       navigate("/");
+      return;
     }
+
+    if (course) return;
 
     const func = async () => {
       try {
         const course = await api(courseId);
-        dispatch(setCourse(course));
+        dispatch(addCourse(course));
       } catch (err) {}
     };
     func();
-  }, [navigate, courseId, isTeacher, api, dispatch]);
+  }, [navigate, courseId, isTeacher, api, dispatch, course]);
 
   return (
     <>
@@ -56,7 +61,7 @@ const EditCourseAuth = ({ isTeacher }) => {
           {error}
         </Alert>
       </Snackbar>
-      {finished && !error && <Outlet />}
+      {course && <Outlet />}
     </>
   );
 };
