@@ -27,11 +27,11 @@ const Home = ({ isStudent }) => {
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Grid container spacing={3}>
-        <Grid item xl={8}>
+        <Grid item md={8} xs={12}>
           <Announcement />
           <CourseOverview courses={courses} readOnly={isStudent} />
         </Grid>
-        <Grid item xl={4}>
+        <Grid item md={4} xs={12}>
           <Timeline />
         </Grid>
       </Grid>

@@ -48,7 +48,26 @@ class StudentApi extends CourseApi {
     return courses;
   }
 
-  async getCourseByid(id) {}
+  async judgePermission(id) {
+    const courseEnrollRef = collection(db, "course_enroll");
+    const q = query(
+      courseEnrollRef,
+      where("user_id", "==", this.uid),
+      where("course_id", "==", id)
+    );
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.length > 0;
+  }
+
+  async getCourseByid(id) {
+    const course = await super.getCourseByid(id);
+    const hasPermission = await this.judgePermission(id);
+    if (!hasPermission) {
+      throw new Error("The course does not belong to this student");
+    }
+
+    return course;
+  }
 
   async getCourses() {
     const course_ids = await this._collectCourseIds();

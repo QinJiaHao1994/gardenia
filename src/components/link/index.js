@@ -3,7 +3,12 @@ import { Link as RouterLink } from "react-router-dom";
 
 const Link = ({ children, ...props }) => {
   return (
-    <MaterialLink underline="none" component={RouterLink} {...props}>
+    <MaterialLink
+      underline="none"
+      color="inherit"
+      component={RouterLink}
+      {...props}
+    >
       {children}
     </MaterialLink>
   );

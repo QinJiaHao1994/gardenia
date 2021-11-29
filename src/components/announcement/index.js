@@ -13,7 +13,7 @@ const Announcement = () => {
       <Typography component="p" variant="h6" color="inherit" noWrap>
         Announcement
       </Typography>
-      <Typography component="p" variant="subtitle1" color="inherit" noWrap>
+      <Typography component="div" variant="subtitle1" color="inherit">
         For the best user experience Google Chrome is the recommended browser
         for viewing Gardenia.
       </Typography>

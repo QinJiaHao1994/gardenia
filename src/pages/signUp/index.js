@@ -177,7 +177,7 @@ const SignUp = () => {
       <Snackbar
         open={open}
         onClose={handleClose}
-        autoHideDuration={2000}
+        autoHideDuration={1000}
         anchorOrigin={{
           vertical: "top",
           horizontal: "center",

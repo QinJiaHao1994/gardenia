@@ -1,6 +1,8 @@
 import { useState } from "react";
-import AppBar from "@mui/material/AppBar";
+import { styled } from "@mui/material/styles";
+import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
+import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -14,11 +16,31 @@ import Stack from "@mui/material/Stack";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
-import TableViewIcon from "@mui/icons-material/TableView";
+import GradingIcon from "@mui/icons-material/Grading";
 import Link from "../../components/link";
+import MenuIcon from "@mui/icons-material/Menu";
 import { extractAbbr } from "../../common/utils";
+import { drawerWidth } from "../drawer";
 
-const ResponsiveAppBar = ({ user, signOut }) => {
+const StyledAppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(["width", "margin"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const AppBar = ({ user, signOut, open, onOpen, show }) => {
   const [anchor, setAnchor] = useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -30,9 +52,21 @@ const ResponsiveAppBar = ({ user, signOut }) => {
   };
 
   return (
-    <AppBar position="absolute">
+    <StyledAppBar position="fixed" open={open}>
       <Toolbar>
-        <Link to="/" sx={{ flexGrow: 1 }}>
+        {show && (
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2, ...(open && { display: "none" }) }}
+            onClick={onOpen}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+        <Link to="/">
           <Typography
             component="h1"
             variant="h6"
@@ -42,6 +76,7 @@ const ResponsiveAppBar = ({ user, signOut }) => {
             Dashboard
           </Typography>
         </Link>
+        <Box sx={{ flexGrow: 1 }}></Box>
         <Stack direction="row" spacing={2}>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
@@ -97,7 +132,7 @@ const ResponsiveAppBar = ({ user, signOut }) => {
             </MenuItem>
             <MenuItem>
               <ListItemIcon>
-                <TableViewIcon />
+                <GradingIcon />
               </ListItemIcon>
               Grade
             </MenuItem>
@@ -111,7 +146,7 @@ const ResponsiveAppBar = ({ user, signOut }) => {
           </Menu>
         </Stack>
       </Toolbar>
-    </AppBar>
+    </StyledAppBar>
   );
 };
-export default ResponsiveAppBar;
+export default AppBar;

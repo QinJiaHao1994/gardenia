@@ -4,14 +4,13 @@ import { useNavigate, useParams, Outlet } from "react-router-dom";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import courseApi from "../../store/course/courseApi";
-import { withIdentity } from "../../store/user/userHoc";
 import { addCourse, selectCourseById } from "../../store/course/courseSlice";
 import { useApi } from "../../common/hooks";
 import { selectApi } from "../../common/utils";
 
 const apiWithThis = selectApi(courseApi, "getCourseByid");
 
-const EditCourseAuth = ({ isTeacher }) => {
+const CourseDetailAuth = () => {
   const { courseId } = useParams();
   const course = useSelector((state) => selectCourseById(state, courseId));
   const dispatch = useDispatch();
@@ -29,7 +28,7 @@ const EditCourseAuth = ({ isTeacher }) => {
   };
 
   useEffect(() => {
-    if (!courseId || !isTeacher) {
+    if (!courseId) {
       navigate("/");
       return;
     }
@@ -43,7 +42,7 @@ const EditCourseAuth = ({ isTeacher }) => {
       } catch (err) {}
     };
     func();
-  }, [navigate, courseId, isTeacher, api, dispatch, course]);
+  }, [navigate, courseId, api, dispatch, course]);
 
   return (
     <>
@@ -65,4 +64,4 @@ const EditCourseAuth = ({ isTeacher }) => {
   );
 };
 
-export default withIdentity(EditCourseAuth);
+export default CourseDetailAuth;
