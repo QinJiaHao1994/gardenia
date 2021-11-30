@@ -16,11 +16,14 @@ const EditCourse = () => {
   const [open, setOpen] = useState(false);
   const [{ loading, error, finished }, api] = useApi(apiWithThis);
 
-  const { id, teacherId, ...other } = course;
+  const { id, code, startDate, endDate, name, semester, year } = course;
   const initialValues = {
-    ...other,
-    startDate: new Date(other.startDate),
-    endDate: new Date(other.endDate),
+    code,
+    name,
+    semester,
+    year,
+    startDate: new Date(startDate),
+    endDate: new Date(endDate),
   };
 
   useEffect(() => {
