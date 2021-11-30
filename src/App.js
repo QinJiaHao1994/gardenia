@@ -1,10 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -16,12 +11,14 @@ const SignUp = lazy(() => import("./pages/signup"));
 const CreateCourse = lazy(() => import("./pages/createCourse"));
 const EditCourseAuth = lazy(() => import("./pages/editCourse/EditCourseAuth"));
 const EditCourse = lazy(() => import("./pages/editCourse/EditCourse"));
-const CourseDetail = lazy(() => import("./pages/courseDetail/CourseDetail"));
-const CourseEnroll = lazy(() => import("./pages/courseEnroll"));
-
 const CourseDetailAuth = lazy(() =>
   import("./pages/courseDetail/CourseDetailAuth")
 );
+const CourseDetailWrapper = lazy(() =>
+  import("./pages/courseDetail/CourseDetailWrapper")
+);
+const CourseDetail = lazy(() => import("./pages/courseDetail/CourseDetail"));
+const CourseEnroll = lazy(() => import("./pages/courseEnroll"));
 
 function App() {
   return (
@@ -40,7 +37,7 @@ function App() {
           <Route path="/" element={<Dashboard />}>
             <Route index element={<Home />} />
             <Route path="course" element={<CourseDetailAuth />}>
-              <Route path=":courseId" element={<Outlet />}>
+              <Route path=":courseId" element={<CourseDetailWrapper />}>
                 <Route index element={<CourseDetail />} />
                 <Route path="enroll" element={<CourseEnroll />} />
               </Route>

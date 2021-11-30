@@ -112,7 +112,7 @@ const SignUp = () => {
                 fullWidth
                 name="password"
                 type="password"
-                autoComplete="new-password"
+                autoComplete="password"
               />
             </Grid>
             <Grid item xs={12}>

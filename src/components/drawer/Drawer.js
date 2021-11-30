@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
@@ -77,7 +77,7 @@ const TooltipWrapper = ({ children, show, ...props }) => {
 
 const Drawer = ({ index, open, onClose }) => {
   const theme = useTheme();
-  const location = useLocation();
+  const params = useParams();
 
   if (index === -1) {
     return null;
@@ -99,7 +99,7 @@ const Drawer = ({ index, open, onClose }) => {
       <Divider />
       <List>
         {config.map(({ key, label, icon, to }) => (
-          <Link to={to(location)} key={key}>
+          <Link to={to(params)} key={key}>
             <TooltipWrapper title={label} placement="right" show={!open}>
               <ListItem button>
                 <ListItemIcon>{icon}</ListItemIcon>

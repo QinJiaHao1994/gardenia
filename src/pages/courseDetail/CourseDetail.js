@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -14,11 +14,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { withIdentity } from "../../store/user/userHoc";
 import { selectCourseById } from "../../store/course/courseSlice";
-import {
-  setDrawerIndex,
-  openDrawer,
-  closeDrawer,
-} from "../../store/common/commonSlice";
+
 import {
   Summary,
   Lectures,
@@ -27,7 +23,6 @@ import {
 } from "../../components/courseDetail";
 
 const CourseDetail = ({ isStudent }) => {
-  const dispatch = useDispatch();
   const { courseId } = useParams();
   const [tab, setTab] = useState("1");
   const course = useSelector((state) => selectCourseById(state, courseId));
@@ -53,16 +48,6 @@ const CourseDetail = ({ isStudent }) => {
       onClick: () => {},
     },
   ];
-
-  useEffect(() => {
-    if (isStudent) return;
-    dispatch(setDrawerIndex(0));
-    dispatch(openDrawer());
-    return () => {
-      dispatch(setDrawerIndex(-1));
-      dispatch(closeDrawer(false));
-    };
-  }, [isStudent, dispatch]);
 
   const { year, semester, code, name, summary } = course;
   return (

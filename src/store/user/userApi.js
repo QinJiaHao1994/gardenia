@@ -7,11 +7,8 @@ import {
 } from "firebase/auth";
 import { getDoc, doc, setDoc } from "firebase/firestore";
 import { db, auth } from "../../app/firebase";
-import {
-  collectIdsAndDocs,
-  toDatabase,
-  fromDatabase,
-} from "../../common/utils";
+import { collectIdsAndDocs } from "../../common/utils";
+import { userConverter } from "../converters";
 
 export const signin = async ({ email, password, remember }) => {
   if (remember) {
@@ -60,13 +57,4 @@ export const getUser = async (user) => {
 const createUser = async (uid, data) => {
   const docRef = doc(db, "users", uid).withConverter(userConverter);
   await setDoc(docRef, data);
-};
-
-const userConverter = {
-  toFirestore: (user) => toDatabase(user),
-  fromFirestore: (snapshot, options) => {
-    const data = fromDatabase(snapshot.data(options));
-    data.createdAt = data.createdAt.toMillis();
-    return data;
-  },
 };

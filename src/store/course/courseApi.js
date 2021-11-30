@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
 import {
   doc,
   getDoc,
   addDoc,
-  // setDoc,
   updateDoc,
   collection,
   query,
@@ -11,12 +9,9 @@ import {
   getDocs,
   documentId,
 } from "firebase/firestore";
-import { db, auth } from "../../app/firebase";
-import {
-  collectIdsAndDocs,
-  toDatabase,
-  fromDatabase,
-} from "../../common/utils";
+import { db } from "../../app/firebase";
+import { collectIdsAndDocs } from "../../common/utils";
+import { courseConverter } from "../converters";
 
 class CourseApi {
   uid;
@@ -36,8 +31,8 @@ class StudentApi extends CourseApi {
     const courseEnrollRef = collection(db, "course_enroll");
     const q = query(courseEnrollRef, where("user_id", "==", this.uid));
     const querySnapshot = await getDocs(q);
-    const course_ids = querySnapshot.docs.map((doc) => doc.data().course_id);
-    return course_ids;
+    const courseIds = querySnapshot.docs.map((doc) => doc.data().course_id);
+    return courseIds;
   }
 
   async _getCoursesByIds(ids) {
@@ -70,8 +65,8 @@ class StudentApi extends CourseApi {
   }
 
   async getCourses() {
-    const course_ids = await this._collectCourseIds();
-    const courses = await this._getCoursesByIds(course_ids);
+    const courseIds = await this._collectCourseIds();
+    const courses = await this._getCoursesByIds(courseIds);
     return courses;
   }
 }
@@ -109,16 +104,6 @@ class TeacherApi extends CourseApi {
     await updateDoc(docRef, data);
   }
 }
-
-const courseConverter = {
-  toFirestore: (course) => toDatabase(course),
-  fromFirestore: (snapshot, options) => {
-    const data = fromDatabase(snapshot.data(options));
-    data.endDate = data.endDate.toMillis();
-    data.startDate = data.startDate.toMillis();
-    return data;
-  },
-};
 
 const courseApiFactory = () => {
   const studentApi = new StudentApi();
