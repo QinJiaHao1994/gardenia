@@ -52,7 +52,7 @@ const CourseDetail = ({ isStudent }) => {
   const { year, semester, code, name, summary } = course;
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 3 }}>
+      <Box sx={{ mt: 4 }}>
         <Typography variant="h4" component="h1">
           {code}-{name}
         </Typography>

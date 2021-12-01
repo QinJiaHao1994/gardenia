@@ -5,7 +5,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import courseApi from "../../store/course/courseApi";
 import { addCourse, selectCourseById } from "../../store/course/courseSlice";
-import { useApi } from "../../common/hooks";
+import { useFetch } from "../../common/hooks";
 import { selectApi } from "../../common/utils";
 
 const apiWithThis = selectApi(courseApi, "getCourseByid");
@@ -16,7 +16,7 @@ const CourseDetailAuth = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [{ error }, api] = useApi(apiWithThis);
+  const [{ error }, api] = useFetch(apiWithThis);
 
   useEffect(() => {
     setOpen(!!error);

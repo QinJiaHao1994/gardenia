@@ -27,6 +27,7 @@ function parseValidator(config) {
 }
 
 const checkRequired = (value, field) => {
+  console.log(value);
   return value !== undefined && value !== null && value !== ""
     ? ""
     : `${capitalizeFirstLetter(field)} is required!`;

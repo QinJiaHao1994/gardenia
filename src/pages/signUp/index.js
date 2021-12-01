@@ -18,7 +18,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Link from "../../components/link";
 import { Form, Field, createForm } from "../../components/form";
-import { useTitle, useApi } from "../../common/hooks";
+import { useTitle, useFetch } from "../../common/hooks";
 import { signup } from "../../store/user/userApi";
 
 import Logo from "../../images/logo.jpg";
@@ -40,7 +40,7 @@ const signUpForm = createForm([
 const SignUp = () => {
   useTitle("Sign up");
   const navigate = useNavigate();
-  const [{ loading, error }, api] = useApi(signup);
+  const [{ loading, error }, api] = useFetch(signup);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {

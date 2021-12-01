@@ -19,6 +19,8 @@ const CourseDetailWrapper = lazy(() =>
 );
 const CourseDetail = lazy(() => import("./pages/courseDetail/CourseDetail"));
 const CourseEnroll = lazy(() => import("./pages/courseEnroll"));
+const CourseDrive = lazy(() => import("./pages/courseDrive"));
+const CourseGrade = lazy(() => import("./pages/courseGrade"));
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function App() {
               <Route path=":courseId" element={<CourseDetailWrapper />}>
                 <Route index element={<CourseDetail />} />
                 <Route path="enroll" element={<CourseEnroll />} />
+                <Route path="grade" element={<CourseGrade />} />
+                <Route path="drive" element={<CourseDrive />} />
               </Route>
             </Route>
             <Route path="create-course" element={<CreateCourse />} />

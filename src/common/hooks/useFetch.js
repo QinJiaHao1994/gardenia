@@ -1,18 +1,24 @@
 import { useState, useCallback } from "react";
+import { isFunc } from "../utils";
 
-const useApi = (api) => {
+const useFetch = (defaultApi) => {
   const [value, setValue] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [finished, setFinished] = useState(false);
 
-  const wrappedApi = useCallback(
+  const wrappedFetch = useCallback(
     async (...args) => {
+      const [first, ...rest] = args;
+
+      const fetch = isFunc(first) ? first : defaultApi;
+      const params = isFunc(first) ? rest : args;
+
       setError(null);
       setLoading(true);
       setFinished(false);
       try {
-        const data = await api(...args);
+        const data = await fetch(...params);
         setValue(data);
         setError(null);
         return data;
@@ -25,7 +31,7 @@ const useApi = (api) => {
         setLoading(false);
       }
     },
-    [api]
+    [defaultApi]
   );
 
   return [
@@ -35,8 +41,8 @@ const useApi = (api) => {
       loading,
       finished,
     },
-    wrappedApi,
+    wrappedFetch,
   ];
 };
 
-export default useApi;
+export default useFetch;

@@ -10,7 +10,8 @@ export const isRegexp = (val) =>
   Object.prototype.toString.call(val) === "[object RegExp]";
 
 export const isFunc = (val) =>
-  Object.prototype.toString.call(val) === "[object Function]";
+  Object.prototype.toString.call(val) === "[object Function]" ||
+  Object.prototype.toString.call(val) === "[object AsyncFunction]";
 
 export const isString = (val) =>
   Object.prototype.toString.call(val) === "[object String]";

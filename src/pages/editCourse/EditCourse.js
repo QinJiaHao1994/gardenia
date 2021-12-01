@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
 import { selectCourseById, setCourse } from "../../store/course/courseSlice";
-import { useApi } from "../../common/hooks";
+import { useFetch } from "../../common/hooks";
 import { selectApi, diff } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
 const apiWithThis = selectApi(courseApi, "updateCourse");
@@ -14,7 +14,7 @@ const EditCourse = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [{ loading, error, finished }, api] = useApi(apiWithThis);
+  const [{ loading, error, finished }, api] = useFetch(apiWithThis);
 
   const { id, code, startDate, endDate, name, semester, year } = course;
   const initialValues = {

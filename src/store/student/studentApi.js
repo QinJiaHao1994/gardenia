@@ -1,7 +1,16 @@
-import { collection, getDocs, where, query, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  where,
+  query,
+  addDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../../app/firebase";
 import { collectIdsAndDocs } from "../../common/utils";
 import { userConverter } from "../converters";
+import { enrollConverter } from "../converters";
 
 export const getStudents = async () => {
   const userRef = collection(db, "users").withConverter(userConverter);
@@ -11,21 +20,35 @@ export const getStudents = async () => {
   return students;
 };
 
-export const getEnrollIds = async (courseId) => {
-  const courseEnrollRef = collection(db, "course_enroll");
+export const getEnrolls = async (courseId) => {
+  const courseEnrollRef = collection(db, "course_enroll").withConverter(
+    enrollConverter
+  );
   const q = query(courseEnrollRef, where("course_id", "==", courseId));
   const querySnapshot = await getDocs(q);
-  const enrollIds = querySnapshot.docs.map((doc) => doc.data().user_id);
-  return enrollIds;
+  const enrolls = querySnapshot.docs.map(collectIdsAndDocs);
+  return enrolls;
 };
 
-export const enrollStudent = async (courseId, studentId) => {
-  const coursesRef = collection(db, "course_enroll");
+export const enrollStudent = async (courseId, userId) => {
+  const coursesRef = collection(db, "course_enroll").withConverter(
+    enrollConverter
+  );
+
   const data = {
-    course_id: courseId,
-    user_id: studentId,
+    courseId,
+    userId,
   };
-  await addDoc(coursesRef, data);
+  const { id } = await addDoc(coursesRef, data);
+  const enrollData = {
+    id,
+    ...data,
+  };
+
+  return enrollData;
 };
 
-export const removeStudent = async (id) => {};
+export const removeStudent = async (enrollId) => {
+  const coursesRef = doc(db, "course_enroll", enrollId);
+  await deleteDoc(coursesRef);
+};

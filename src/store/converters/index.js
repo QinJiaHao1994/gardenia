@@ -1,4 +1,4 @@
 import courseConverter from "./courseConverter";
 import userConverter from "./userConverter";
-
-export { userConverter, courseConverter };
+import enrollConverter from "./enrollConverter";
+export { userConverter, courseConverter, enrollConverter };

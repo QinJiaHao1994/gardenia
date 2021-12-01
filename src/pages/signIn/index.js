@@ -14,7 +14,7 @@ import Typography from "@mui/material/Typography";
 import Link from "../../components/link";
 import { Form, Field, createForm } from "../../components/form";
 import { signin } from "../../store/user/userApi";
-import { useTitle, useApi } from "../../common/hooks";
+import { useTitle, useFetch } from "../../common/hooks";
 
 import Image from "../../images/loginBg.jpg";
 import Logo from "../../images/logo.jpg";
@@ -34,7 +34,7 @@ const SignIn = () => {
   useTitle("Sign in");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [{ loading, error }, api] = useApi(signin);
+  const [{ loading, error }, api] = useFetch(signin);
   let [searchParams] = useSearchParams();
   const to = searchParams.get("to") || "/";
 

@@ -24,13 +24,13 @@ const form = createForm([
     field: "year",
     label: "Year",
     required: true,
-    transform: parseInt,
+    transform: (val) => (val ? parseInt(val) : ""),
   },
   {
     field: "semester",
     label: "Semester",
     required: true,
-    transform: parseInt,
+    transform: (val) => (val ? parseInt(val) : ""),
   },
   {
     field: "startDate",

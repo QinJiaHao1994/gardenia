@@ -1,4 +1,5 @@
-import useApi from "./useApi";
+import useFetch from "./useFetch";
+import useFetchWithNotify from "./useFetchWithNotify";
 import useTitle from "./useTitle";
 
-export { useApi, useTitle };
+export { useFetch, useTitle, useFetchWithNotify };

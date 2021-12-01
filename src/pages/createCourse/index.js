@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
 import { withOnlyTeacher } from "../../store/user/userHoc";
-import { useApi } from "../../common/hooks";
+import { useFetch } from "../../common/hooks";
 import { selectApi } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
 import { addCourse } from "../../store/course/courseSlice";
@@ -13,7 +13,7 @@ const CreateCourse = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [{ loading, error, finished }, api] = useApi(apiWithThis);
+  const [{ loading, error, finished }, api] = useFetch(apiWithThis);
 
   useEffect(() => {
     if (!finished) return;

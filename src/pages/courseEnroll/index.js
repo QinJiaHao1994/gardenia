@@ -17,11 +17,14 @@ import { withOnlyTeacher } from "../../store/user/userHoc";
 import {
   selectStudents,
   selectStatus,
-  selectEnrollIds,
-  fetchStudentsAndEnrollIdsAsync,
+  selectEnrolls,
+  fetchStudentsAndEnrollsAsync,
+  addEnroll,
+  removeEnroll,
 } from "../../store/student/studentSlice";
+import { enrollStudent, removeStudent } from "../../store/student/studentApi";
 import { extractAbbr } from "../../common/utils";
-import { useApi } from "../../common/hooks";
+import { useFetchWithNotify } from "../../common/hooks";
 
 const filterOptions = createFilterOptions({
   stringify: ({ firstName, lastName, email }) =>
@@ -37,35 +40,55 @@ const CourseEnroll = () => {
   const { courseId } = useParams();
   const status = useSelector(selectStatus);
   const students = useSelector(selectStudents);
-  const enrollIds = useSelector(selectEnrollIds);
+  const enrolls = useSelector(selectEnrolls);
   const dispatch = useDispatch();
 
-  const [{ loading, error, finished }, api] = useApi();
+  const [enrollNotify, enrollApi, loading] = useFetchWithNotify(
+    enrollStudent,
+    "Add success!"
+  );
+  const [removeNotify, removeApi] = useFetchWithNotify(
+    removeStudent,
+    "Remove success!"
+  );
 
-  const handleAdd = () => {
-    console.log(value);
+  const handleAdd = async () => {
+    try {
+      const enrollData = await enrollApi(courseId, value.id);
+      dispatch(addEnroll(enrollData));
+      setValue(null);
+    } catch (error) {}
   };
 
-  const handleDelete = (id) => () => {
-    console.log(id);
+  const handleDelete = (enrollId) => async () => {
+    try {
+      await removeApi(enrollId);
+      dispatch(removeEnroll(enrollId));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     if (status !== "idle") return;
-    dispatch(fetchStudentsAndEnrollIdsAsync(courseId));
+    dispatch(fetchStudentsAndEnrollsAsync(courseId));
   }, [dispatch, status, courseId]);
 
-  const [enrolled, rest] = students.reduce(
-    (acc, curr) => {
-      if (enrollIds.includes(curr.id)) {
-        acc[0].push(curr);
-      } else {
-        acc[1].push(curr);
-      }
-      return acc;
-    },
-    [[], []]
-  );
+  const enrolled = [];
+  const rest = [];
+  students.forEach((student) => {
+    const { id } = student;
+    const find = enrolls.find((enroll) => enroll.userId === id);
+    if (!find) {
+      rest.push(student);
+      return;
+    }
+
+    enrolled.push({
+      ...student,
+      enrollId: find.id,
+    });
+  });
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -112,7 +135,7 @@ const CourseEnroll = () => {
           )}
         />
         <Button
-          disabled={!value}
+          disabled={!value || loading}
           variant="contained"
           color="secondary"
           onClick={handleAdd}
@@ -135,9 +158,10 @@ const CourseEnroll = () => {
             p: 0.5,
             flexGrow: 1,
             minHeight: 400,
-            justifyContent: "center",
             flexWrap: "wrap",
             listStyle: "none",
+            display: "flex",
+            justifyContent: "flex-start",
           }}
         >
           {enrolled.map((student) => (
@@ -147,7 +171,7 @@ const CourseEnroll = () => {
                   color="error"
                   label={`${student.firstName} ${student.lastName}`}
                   variant="outlined"
-                  onDelete={handleDelete(student.id)}
+                  onDelete={handleDelete(student.enrollId)}
                   avatar={<Avatar>{extractAbbr(student)}</Avatar>}
                 />
               </Tooltip>
@@ -155,6 +179,8 @@ const CourseEnroll = () => {
           ))}
         </Paper>
       </Stack>
+      {enrollNotify}
+      {removeNotify}
     </Container>
   );
 };
