@@ -9,6 +9,7 @@ import { withUserAuthentication, withUser } from "../../store/user/userHoc";
 import {
   selectdrawerStatus,
   selectDrawerIndex,
+  selectMergedLayout,
   openDrawer,
   closeDrawer,
 } from "../../store/common/commonSlice";
@@ -16,6 +17,7 @@ import { compose } from "../../common/hocs";
 
 const Dashboard = ({ user }) => {
   const dispatch = useDispatch();
+  const mergedLayout = useSelector(selectMergedLayout);
   const index = useSelector(selectDrawerIndex);
   const open = useSelector(selectdrawerStatus);
   const handleOpen = () => dispatch(openDrawer());
@@ -37,6 +39,7 @@ const Dashboard = ({ user }) => {
           flexGrow: 1,
           height: "100vh",
           overflow: "auto",
+          ...mergedLayout,
         }}
       >
         <Toolbar />

@@ -102,3 +102,28 @@ const equals = (after, before) => {
   if (isDate(after)) return after.getTime() === before.getTime();
   return after === before;
 };
+
+export const cancellablePromise = (promise) => {
+  let isCanceled = false;
+
+  const wrappedPromise = new Promise((resolve, reject) => {
+    promise.then(
+      (value) => (isCanceled ? reject({ isCanceled, value }) : resolve(value)),
+      (error) => reject({ isCanceled, error })
+    );
+  });
+
+  return {
+    promise: wrappedPromise,
+    cancel: () => (isCanceled = true),
+  };
+};
+
+export const delay = (n) => new Promise((resolve) => setTimeout(resolve, n));
+
+export const uuid = (obj) => {
+  var temp_url = URL.createObjectURL(obj);
+  var uuid = temp_url.toString();
+  URL.revokeObjectURL(temp_url);
+  return uuid.substr(uuid.lastIndexOf("/") + 1);
+};

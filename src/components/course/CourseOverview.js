@@ -22,7 +22,7 @@ const CourseOverview = ({ courses, readOnly }) => {
   return (
     <Paper
       sx={{
-        mt: 2,
+        mb: 2,
         p: 2,
         display: "flex",
         flexDirection: "column",

@@ -5,6 +5,7 @@ const Timeline = () => {
     <Paper
       sx={{
         p: 2,
+        mb: 2,
         display: "flex",
         flexDirection: "column",
       }}

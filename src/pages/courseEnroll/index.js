@@ -64,9 +64,7 @@ const CourseEnroll = () => {
     try {
       await removeApi(enrollId);
       dispatch(removeEnroll(enrollId));
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
