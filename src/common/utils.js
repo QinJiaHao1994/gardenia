@@ -3,6 +3,9 @@ export const noop = () => {};
 export const isSameType = (a, b) =>
   Object.prototype.toString.call(a) === Object.prototype.toString.call(b);
 
+export const isBoolean = (val) =>
+  Object.prototype.toString.call(val) === "[object Boolean]";
+
 export const isDate = (val) =>
   Object.prototype.toString.call(val) === "[object Date]";
 
@@ -74,7 +77,7 @@ class Storage {
 
 export const storage = new Storage();
 
-export const selectApi =
+export const bindThisToClassApi =
   (api, key) =>
   (...args) =>
     api[key](...args);
@@ -126,4 +129,36 @@ export const uuid = (obj) => {
   var uuid = temp_url.toString();
   URL.revokeObjectURL(temp_url);
   return uuid.substr(uuid.lastIndexOf("/") + 1);
+};
+
+export const contains = (current, selector, root) => {
+  if (current === root || current == null) return null;
+  const targets = root.querySelectorAll(selector);
+  const set = new Set(targets);
+  return conatinsHelper(current, set, root);
+};
+
+const conatinsHelper = (current, set, root) => {
+  if (current === root || current == null) return null;
+
+  if (set.has(current)) {
+    const { type, index } = current.dataset;
+    const data = {
+      type,
+      index,
+    };
+    return data;
+  }
+
+  return conatinsHelper(current.parentElement, set, root);
+};
+
+export const generateNotifyPropsByRequestResult = (data) => {
+  const { reset, error } = data;
+  return {
+    open: true,
+    onClose: reset,
+    type: !error,
+    text: error ? error : "Rename success!",
+  };
 };

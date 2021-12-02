@@ -4,10 +4,10 @@ import { useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
 import { withOnlyTeacher } from "../../store/user/userHoc";
 import { useFetch } from "../../common/hooks";
-import { selectApi } from "../../common/utils";
+import { bindThisToClassApi } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
 import { addCourse } from "../../store/course/courseSlice";
-const apiWithThis = selectApi(courseApi, "createCourse");
+const apiWithThis = bindThisToClassApi(courseApi, "createCourse");
 
 const CreateCourse = () => {
   const dispatch = useDispatch();

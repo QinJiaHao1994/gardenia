@@ -1,40 +1,48 @@
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const Files = ({
+  title,
   Component,
   data,
   type,
-  select,
+  selectId,
   onClick,
   onDoubleClick,
   onClickAway,
-  onContextMenu,
 }) => {
+  if (!data.length) return null;
+
   return (
-    <Box
-      component="ul"
-      sx={{
-        p: 0,
-        listStyle: "none",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        flexWrap: "wrap",
-      }}
-    >
-      {data.map((file) => (
-        <Component
-          key={file.id}
-          data={file}
-          type={type}
-          isSelect={file.id === select}
-          onClick={onClick}
-          onDoubleClick={onDoubleClick}
-          onClickAway={onClickAway}
-          onContextMenu={onContextMenu}
-        />
-      ))}
-    </Box>
+    <>
+      <Typography variant="subtitle1" component="p">
+        {title}
+      </Typography>
+      <Box
+        component="ul"
+        sx={{
+          p: 0,
+          listStyle: "none",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "flex-start",
+          flexWrap: "wrap",
+        }}
+      >
+        {data.map((file, index) => (
+          <Component
+            index={index}
+            key={file.id}
+            data={file}
+            type={type}
+            isSelect={file.id === selectId}
+            onClick={onClick}
+            onDoubleClick={onDoubleClick}
+            onClickAway={onClickAway}
+          />
+        ))}
+      </Box>
+    </>
   );
 };
 

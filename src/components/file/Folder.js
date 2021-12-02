@@ -6,11 +6,10 @@ import FolderIcon from "@mui/icons-material/Folder";
 import { withClickAwayWhenSelected } from "../../common/hocs";
 
 const Folder = forwardRef(
-  ({ data, type, isSelect, onClick, onDoubleClick, onContextMenu }, ref) => {
+  ({ data, index, isSelect, onClick, onDoubleClick }, ref) => {
     return (
       <Paper
         ref={ref}
-        onContextMenu={(e) => onContextMenu(e, data)}
         sx={{
           bgcolor: isSelect ? "#e8f0fe" : "inherits",
           p: 1,
@@ -23,6 +22,8 @@ const Folder = forwardRef(
         }}
         variant="outlined"
         component="li"
+        data-type="Folder"
+        data-index={index}
         onClick={() => onClick(data)}
         onDoubleClick={() => onDoubleClick(data)}
       >

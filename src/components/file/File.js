@@ -8,11 +8,10 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { withClickAwayWhenSelected } from "../../common/hocs";
 
 const File = forwardRef(
-  ({ data, type, isSelect, onClick, onDoubleClick, onContextMenu }, ref) => {
+  ({ data, index, isSelect, onClick, onDoubleClick }, ref) => {
     return (
       <Paper
         ref={ref}
-        onContextMenu={(e) => onContextMenu(e, data)}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -25,6 +24,8 @@ const File = forwardRef(
         }}
         variant="outlined"
         component="li"
+        data-type="File"
+        data-index={index}
         onClick={() => onClick(data)}
         onDoubleClick={() => onDoubleClick(data)}
       >

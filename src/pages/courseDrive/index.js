@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
@@ -9,9 +9,9 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import IconButton from "@mui/material/IconButton";
-import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
-import ViewListIcon from "@mui/icons-material/ViewList";
+// import IconButton from "@mui/material/IconButton";
+// import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
+// import ViewListIcon from "@mui/icons-material/ViewList";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
@@ -20,19 +20,18 @@ import {
   fetchDriveAsync,
   selectFileDict,
   selectDefaultPath,
+  rename,
 } from "../../store/drive/driveSlice";
 import { setLayout } from "../../store/common/commonSlice";
 import { FileWrapper } from "../../components/file";
 import SpeedDial from "../../components/speedDial";
+import { withNotify } from "../../common/hocs";
+import { useRequest } from "../../common/hooks";
+import { renameFileOrFolder } from "../../store/drive/driveApi";
+import { parsePath } from "../../store/drive/driveUtils";
+import { generateNotifyPropsByRequestResult } from "../../common/utils";
 
-const parsePath = (dict, path) => {
-  if (!path || path.length === 0) return [];
-  const last = path[path.length - 1];
-  if (!last) return [];
-  return dict[last.id].children;
-};
-
-const CourseDrive = () => {
+const CourseDrive = ({ setNotify }) => {
   const { courseId } = useParams();
   const status = useSelector(selectStatus);
   const fileDict = useSelector(selectFileDict);
@@ -40,6 +39,7 @@ const CourseDrive = () => {
   const dispatch = useDispatch();
   const [type] = useState(false);
   const [path, setPath] = useState(defaultPath);
+  const [request, rest] = useRequest(renameFileOrFolder);
 
   const files = useMemo(() => {
     return parsePath(fileDict, path);
@@ -66,7 +66,7 @@ const CourseDrive = () => {
     },
   ];
 
-  const handleJumpByMetadata = ({ id, name, isDirectory }) => {
+  const handleOpen = ({ id, name, isDirectory }) => {
     if (!isDirectory) {
       return;
     }
@@ -76,6 +76,22 @@ const CourseDrive = () => {
 
   const handleJumpByIndex = (index) => {
     setPath([...path.slice(0, index + 1)]);
+  };
+
+  const handleRename = async (name, data, cb) => {
+    try {
+      await request(name, data, fileDict);
+      setNotify(generateNotifyPropsByRequestResult(rest));
+      dispatch(
+        rename({
+          id: data.id,
+          name,
+        })
+      );
+      cb();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -160,7 +176,12 @@ const CourseDrive = () => {
               {type ? <CalendarViewMonthIcon /> : <ViewListIcon />}
             </IconButton> */}
           </Stack>
-          <FileWrapper data={files} type={type} onJump={handleJumpByMetadata} />
+          <FileWrapper
+            data={files}
+            type={type}
+            onOpen={handleOpen}
+            onRename={handleRename}
+          />
         </Paper>
       </Box>
       <SpeedDial
@@ -173,4 +194,4 @@ const CourseDrive = () => {
   );
 };
 
-export default CourseDrive;
+export default withNotify(CourseDrive);

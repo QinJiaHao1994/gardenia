@@ -26,7 +26,15 @@ const initialState = {
 export const driveSlice = createSlice({
   name: "drive",
   initialState,
-  reducers: {},
+  reducers: {
+    rename: (state, action) => {
+      const { id, name } = action.payload;
+      console.log();
+      state.fileDict[id].name = name;
+    },
+    add: (state, action) => {},
+    remove: (state, action) => {},
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchDriveAsync.pending, (state) => {
@@ -35,14 +43,8 @@ export const driveSlice = createSlice({
       .addCase(fetchDriveAsync.fulfilled, (state, action) => {
         const fileDict = parseFiles(action.payload);
         const { id, name } = fileDict.get("0");
-        const defaultPath = [
-          {
-            id,
-            name,
-          },
-        ];
+        const defaultPath = [{ id, name }];
         state.defaultPath = defaultPath;
-
         const data = {};
         fileDict.forEach((value, key) => (data[key] = value));
         state.fileDict = data;
@@ -54,7 +56,7 @@ export const driveSlice = createSlice({
   },
 });
 
-// export const { } = driveSlice.actions;
+export const { rename, add, remove } = driveSlice.actions;
 
 export const selectStatus = (state) => state.drive.status;
 export const selectFileDict = (state) => state.drive.fileDict;

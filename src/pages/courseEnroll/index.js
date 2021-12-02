@@ -43,14 +43,12 @@ const CourseEnroll = () => {
   const enrolls = useSelector(selectEnrolls);
   const dispatch = useDispatch();
 
-  const [enrollNotify, enrollApi, loading] = useFetchWithNotify(
-    enrollStudent,
-    "Add success!"
-  );
-  const [removeNotify, removeApi] = useFetchWithNotify(
-    removeStudent,
-    "Remove success!"
-  );
+  const [enrollNotify, enrollApi, loading] = useFetchWithNotify(enrollStudent, {
+    defaultSuccessText: "Add success!",
+  });
+  const [removeNotify, removeApi] = useFetchWithNotify(removeStudent, {
+    defaultSuccessText: "Remove success!",
+  });
 
   const handleAdd = async () => {
     try {

@@ -7,9 +7,9 @@ import courseApi from "../../store/course/courseApi";
 import { withIdentity } from "../../store/user/userHoc";
 import { addCourse, selectCourseById } from "../../store/course/courseSlice";
 import { useFetch } from "../../common/hooks";
-import { selectApi } from "../../common/utils";
+import { bindThisToClassApi } from "../../common/utils";
 
-const apiWithThis = selectApi(courseApi, "getCourseByid");
+const apiWithThis = bindThisToClassApi(courseApi, "getCourseByid");
 
 const EditCourseAuth = ({ isTeacher }) => {
   const { courseId } = useParams();

@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import CreateOrEditCourse from "../../components/createOrEditCourse";
 import { selectCourseById, setCourse } from "../../store/course/courseSlice";
 import { useFetch } from "../../common/hooks";
-import { selectApi, diff } from "../../common/utils";
+import { bindThisToClassApi, diff } from "../../common/utils";
 import courseApi from "../../store/course/courseApi";
-const apiWithThis = selectApi(courseApi, "updateCourse");
+const apiWithThis = bindThisToClassApi(courseApi, "updateCourse");
 
 const EditCourse = () => {
   const { courseId } = useParams();

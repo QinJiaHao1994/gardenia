@@ -1,2 +1,4 @@
 import FileWrapper from "./FileWrapper";
-export { FileWrapper };
+import RenameDialog from "./RenameDialog";
+
+export { FileWrapper, RenameDialog };

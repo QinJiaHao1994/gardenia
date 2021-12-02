@@ -6,14 +6,20 @@ import { noop } from "../utils";
 
 const useFetchWithNotify = (
   defaultApi,
-  successText,
-  errorText,
-  onSuccess = noop,
-  onError = noop
+  {
+    onSuccess = noop,
+    onError = noop,
+    defaultSuccessText = "",
+    defaultErrorText = "",
+  }
 ) => {
   const [open, setOpen] = useState(false);
+  const [successText, setSuccessText] = useState(defaultSuccessText);
+  const [errorText, setErrorText] = useState(defaultErrorText);
+
   const [{ value, error, loading, finished }, wrappedFetch] =
     useFetch(defaultApi);
+
   const type = error ? "error" : "success";
   const text = error ? errorText || error : successText;
 
@@ -43,7 +49,7 @@ const useFetchWithNotify = (
     </Snackbar>
   );
 
-  return [Nofity, wrappedFetch, loading];
+  return [Nofity, wrappedFetch, loading, setSuccessText, setErrorText];
 };
 
 export default useFetchWithNotify;
