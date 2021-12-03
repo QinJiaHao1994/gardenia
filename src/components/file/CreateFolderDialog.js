@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,12 +7,13 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const RenameDialog = ({ data, onClose, loading, onSubmit }) => {
-  const [value, setValue] = useState("");
-  useEffect(() => {
-    if (!data) return;
-    setValue(data.name);
-  }, [data]);
+const CreateFolderDialog = ({ onClose, loading, onSubmit }) => {
+  const [value, setValue] = useState("Untitled folder");
+
+  const handleClose = (e) => {
+    setValue("Untitled folder");
+    onClose(e);
+  };
 
   return (
     <>
@@ -23,8 +24,8 @@ const RenameDialog = ({ data, onClose, loading, onSubmit }) => {
           alignItems: "center",
         }}
       >
-        Rename
-        <IconButton aria-label="close" onClick={onClose}>
+        New Folder
+        <IconButton aria-label="close" onClick={handleClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -39,7 +40,7 @@ const RenameDialog = ({ data, onClose, loading, onSubmit }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={() => onSubmit(value)} disabled={!value || loading}>
           Ok
         </Button>
@@ -48,4 +49,4 @@ const RenameDialog = ({ data, onClose, loading, onSubmit }) => {
   );
 };
 
-export default RenameDialog;
+export default CreateFolderDialog;

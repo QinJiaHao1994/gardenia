@@ -1,5 +1,10 @@
 import React, { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 
@@ -21,6 +26,8 @@ const CourseDetail = lazy(() => import("./pages/courseDetail/CourseDetail"));
 const CourseEnroll = lazy(() => import("./pages/courseEnroll"));
 const CourseDrive = lazy(() => import("./pages/courseDrive"));
 const CourseGrade = lazy(() => import("./pages/courseGrade"));
+const MarkdownPreview = lazy(() => import("./pages/markdownPreview"));
+const Redirect = lazy(() => import("./pages/Redirect"));
 
 function App() {
   return (
@@ -44,6 +51,10 @@ function App() {
                 <Route path="enroll" element={<CourseEnroll />} />
                 <Route path="grade" element={<CourseGrade />} />
                 <Route path="drive" element={<CourseDrive />} />
+                <Route path="preview" element={<Outlet />}>
+                  <Route index element={<Redirect to="/" />} />
+                  <Route path=":mdId" element={<MarkdownPreview />} />
+                </Route>
               </Route>
             </Route>
             <Route path="create-course" element={<CreateCourse />} />

@@ -1,5 +1,6 @@
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
+import { withOnlyTeacher } from "../../store/user/userHoc";
 
 const CourseGrade = () => {
   return (
@@ -9,4 +10,4 @@ const CourseGrade = () => {
   );
 };
 
-export default CourseGrade;
+export default withOnlyTeacher(CourseGrade);

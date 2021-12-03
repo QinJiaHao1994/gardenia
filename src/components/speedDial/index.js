@@ -6,7 +6,10 @@ import SpeedDialAction from "@mui/material/SpeedDialAction";
 
 const SpeedDial = ({ actions, ...props }) => {
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (_, reason) => {
+    if (reason === "focus") return;
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
 
   return (

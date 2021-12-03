@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useMemo, forwardRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
@@ -12,66 +12,76 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 // import IconButton from "@mui/material/IconButton";
 // import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
 // import ViewListIcon from "@mui/icons-material/ViewList";
-import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import {
   selectStatus,
   fetchDriveAsync,
-  selectFileDict,
+  selectFiles,
   selectDefaultPath,
   rename,
+  add,
+  remove,
 } from "../../store/drive/driveSlice";
+import { withOnlyTeacher } from "../../store/user/userHoc";
 import { setLayout } from "../../store/common/commonSlice";
-import { FileWrapper } from "../../components/file";
-import SpeedDial from "../../components/speedDial";
+import FileWrapper from "../../components/file";
 import { withNotify } from "../../common/hocs";
 import { useRequest } from "../../common/hooks";
-import { renameFileOrFolder } from "../../store/drive/driveApi";
-import { parsePath } from "../../store/drive/driveUtils";
-import { generateNotifyPropsByRequestResult } from "../../common/utils";
+import {
+  renameFileOrFolder,
+  createFolder,
+  deleteFileOrFolder,
+  uploadFile,
+  getFileDownloadURL,
+} from "../../store/drive/driveApi";
+import { parsePath, parseFiles } from "../../store/drive/driveUtils";
+import { udpateNotifyPropsByResponse } from "../../common/utils";
 
-const CourseDrive = ({ setNotify }) => {
+const CourseDrive = ({ updateNotify }) => {
   const { courseId } = useParams();
   const status = useSelector(selectStatus);
-  const fileDict = useSelector(selectFileDict);
+  const files = useSelector(selectFiles);
   const defaultPath = useSelector(selectDefaultPath);
   const dispatch = useDispatch();
   const [type] = useState(false);
   const [path, setPath] = useState(defaultPath);
-  const [request, rest] = useRequest(renameFileOrFolder);
+  const [reqRename, resRename] = useRequest(renameFileOrFolder);
+  const [reqDelete, resDelete] = useRequest(deleteFileOrFolder);
+  const [reqAddFolder, resAddFolder] = useRequest(createFolder);
+  const [reqUpload, resUpload] = useRequest(uploadFile);
+  const loadings = {
+    rename: resRename.status === "loading",
+    addFolder: resAddFolder.status === "loading",
+  };
 
-  const files = useMemo(() => {
+  const fileDict = useMemo(() => parseFiles(files), [files]);
+
+  const filesArray = useMemo(() => {
     return parsePath(fileDict, path);
   }, [path, fileDict]);
 
-  const actions = [
-    {
-      key: 2,
-      label: "Folder",
-      icon: <DriveFolderUploadIcon />,
-      onClick: () => {},
-    },
-    {
-      key: 1,
-      label: "File",
-      icon: <UploadFileIcon />,
-      onClick: () => {},
-    },
-    {
-      key: 0,
-      label: "Markdown",
-      icon: <ChromeReaderModeIcon />,
-      onClick: () => {},
-    },
-  ];
-
   const handleOpen = ({ id, name, isDirectory }) => {
     if (!isDirectory) {
+      handleOpenFile(id);
       return;
     }
     const last = { id, name };
     setPath([...path, last]);
+  };
+
+  const handleOpenFile = async (id) => {
+    const file = fileDict[id];
+    const type = file.type;
+
+    if (type === "text/markdown") {
+      window.open(`./preview/${id}`, "_blank");
+      return;
+    }
+    try {
+      const url = await getFileDownloadURL(file.url);
+      window.open(url, "_blank");
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleJumpByIndex = (index) => {
@@ -80,8 +90,7 @@ const CourseDrive = ({ setNotify }) => {
 
   const handleRename = async (name, data, cb) => {
     try {
-      await request(name, data, fileDict);
-      setNotify(generateNotifyPropsByRequestResult(rest));
+      await reqRename(name, data, fileDict);
       dispatch(
         rename({
           id: data.id,
@@ -89,10 +98,75 @@ const CourseDrive = ({ setNotify }) => {
         })
       );
       cb();
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    udpateNotifyPropsByResponse(updateNotify, resRename, {
+      successText: "Rename success!",
+    });
+  }, [resRename, updateNotify]);
+
+  const handleDelete = async (id) => {
+    try {
+      await reqDelete(fileDict[id]);
+      dispatch(remove(id));
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    udpateNotifyPropsByResponse(updateNotify, resDelete, {
+      successText: "Remove success!",
+    });
+  }, [resDelete, updateNotify]);
+
+  const handleUpload = async (file) => {
+    try {
+      const data = await reqUpload(
+        file,
+        courseId,
+        path[path.length - 1],
+        fileDict
+      );
+      data.createdAt = data.createdAt.getTime();
+      data.updatedAt = data.updatedAt.getTime();
+      dispatch(add(data));
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
   };
+
+  useEffect(() => {
+    udpateNotifyPropsByResponse(updateNotify, resUpload, {
+      successText: "Upload success!",
+    });
+  }, [resUpload, updateNotify]);
+
+  const handleAddFolder = async (name, cb) => {
+    const date = new Date();
+    const data = {
+      name,
+      isDirectory: true,
+      courseId,
+      createdAt: date,
+      updatedAt: date,
+      parentId: path[path.length - 1].id,
+    };
+    try {
+      const id = await reqAddFolder(data);
+      data.id = id;
+      data.createdAt = data.createdAt.getTime();
+      data.updatedAt = data.updatedAt.getTime();
+      dispatch(add({ ...data, id }));
+      cb();
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    udpateNotifyPropsByResponse(updateNotify, resAddFolder, {
+      successText: "Create success!",
+    });
+  }, [resAddFolder, updateNotify]);
 
   useEffect(() => {
     if (status !== "idle") return;
@@ -177,21 +251,19 @@ const CourseDrive = ({ setNotify }) => {
             </IconButton> */}
           </Stack>
           <FileWrapper
-            data={files}
+            data={filesArray}
             type={type}
             onOpen={handleOpen}
             onRename={handleRename}
+            onDelete={handleDelete}
+            onUpload={handleUpload}
+            onAddFolder={handleAddFolder}
+            loadings={loadings}
           />
         </Paper>
       </Box>
-      <SpeedDial
-        actions={actions}
-        FabProps={{
-          color: "secondary",
-        }}
-      />
     </Container>
   );
 };
 
-export default withNotify(CourseDrive);
+export default withOnlyTeacher(withNotify(CourseDrive));

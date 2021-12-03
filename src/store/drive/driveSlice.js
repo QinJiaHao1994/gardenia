@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import parseFiles from "./parseFiles";
 import { getFiles } from "./driveApi";
 import { selectCourseById } from "../course/courseSlice";
 
@@ -8,16 +7,16 @@ export const fetchDriveAsync = createAsyncThunk(
   async (courseId, { getState }) => {
     const course = selectCourseById(getState(), courseId);
     const files = await getFiles(courseId);
-    files.push({
+    files["0"] = {
       id: "0",
       name: course.code,
-    });
+    };
     return files;
   }
 );
 
 const initialState = {
-  fileDict: null,
+  files: null,
   defaultPath: null,
   status: "idle", //'idle' | 'loading' | 'succeeded' | 'failed',
   error: null,
@@ -29,11 +28,15 @@ export const driveSlice = createSlice({
   reducers: {
     rename: (state, action) => {
       const { id, name } = action.payload;
-      console.log();
-      state.fileDict[id].name = name;
+      state.files[id].name = name;
     },
-    add: (state, action) => {},
-    remove: (state, action) => {},
+    add: (state, action) => {
+      const data = action.payload;
+      state.files[data.id] = data;
+    },
+    remove: (state, action) => {
+      delete state.files[action.payload];
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -41,13 +44,11 @@ export const driveSlice = createSlice({
         state.status = "loading";
       })
       .addCase(fetchDriveAsync.fulfilled, (state, action) => {
-        const fileDict = parseFiles(action.payload);
-        const { id, name } = fileDict.get("0");
+        const files = action.payload;
+        const { id, name } = files["0"];
         const defaultPath = [{ id, name }];
         state.defaultPath = defaultPath;
-        const data = {};
-        fileDict.forEach((value, key) => (data[key] = value));
-        state.fileDict = data;
+        state.files = files;
       })
       .addCase(fetchDriveAsync.rejected, (state, action) => {
         state.status = "failed";
@@ -59,7 +60,7 @@ export const driveSlice = createSlice({
 export const { rename, add, remove } = driveSlice.actions;
 
 export const selectStatus = (state) => state.drive.status;
-export const selectFileDict = (state) => state.drive.fileDict;
+export const selectFiles = (state) => state.drive.files;
 export const selectDefaultPath = (state) => state.drive.defaultPath;
 
 export default driveSlice.reducer;

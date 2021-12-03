@@ -22,7 +22,7 @@ import {
   Labs,
 } from "../../components/courseDetail";
 
-const CourseDetail = ({ isStudent }) => {
+const CourseDetail = ({ isStudent, isTeacher }) => {
   const { courseId } = useParams();
   const [tab, setTab] = useState("1");
   const course = useSelector((state) => selectCourseById(state, courseId));
@@ -81,12 +81,14 @@ const CourseDetail = ({ isStudent }) => {
           <Quizzes />
         </TabPanel>
       </TabContext>
-      <SpeedDial
-        actions={actions}
-        FabProps={{
-          color: "secondary",
-        }}
-      />
+      {isTeacher && (
+        <SpeedDial
+          actions={actions}
+          FabProps={{
+            color: "secondary",
+          }}
+        />
+      )}
     </Container>
   );
 };

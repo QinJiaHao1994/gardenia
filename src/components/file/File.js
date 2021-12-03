@@ -4,7 +4,8 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+// import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import FileOpenIcon from "@mui/icons-material/PictureAsPdfIcon";
 import { withClickAwayWhenSelected } from "../../common/hocs";
 
 const File = forwardRef(
@@ -38,7 +39,12 @@ const File = forwardRef(
             alignItems: "center",
           }}
         >
-          <PictureAsPdfIcon sx={{ fontSize: 80, color: "#d85040" }} />
+          <FileOpenIcon
+            sx={{
+              fontSize: 80,
+              color: (theme) => theme.palette.grey.A700,
+            }}
+          />
         </Box>
         <Stack
           direction="row"
@@ -47,7 +53,9 @@ const File = forwardRef(
           spacing={2}
           sx={{ p: 1, bgcolor: isSelect ? "#e8f0fe" : "inherits" }}
         >
-          <PictureAsPdfIcon sx={{ fontSize: 24, color: "#d85040" }} />
+          <FileOpenIcon
+            sx={{ fontSize: 24, color: (theme) => theme.palette.grey.A700 }}
+          />
           <Tooltip title={data.name} enterDelay={500}>
             <Typography variant="caption" component="span" noWrap>
               {data.name}

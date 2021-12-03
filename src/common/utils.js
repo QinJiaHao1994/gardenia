@@ -124,7 +124,7 @@ export const cancellablePromise = (promise) => {
 
 export const delay = (n) => new Promise((resolve) => setTimeout(resolve, n));
 
-export const uuid = (obj) => {
+export const generateUUID = (obj) => {
   var temp_url = URL.createObjectURL(obj);
   var uuid = temp_url.toString();
   URL.revokeObjectURL(temp_url);
@@ -153,12 +153,15 @@ const conatinsHelper = (current, set, root) => {
   return conatinsHelper(current.parentElement, set, root);
 };
 
-export const generateNotifyPropsByRequestResult = (data) => {
-  const { reset, error } = data;
-  return {
+export const udpateNotifyPropsByResponse = (updateFn, data, options = {}) => {
+  const { reset, error, status } = data;
+  if (status !== "succeeded" && status !== "failed") return;
+  const { successText = "Success!" } = options;
+
+  updateFn({
     open: true,
     onClose: reset,
     type: !error,
-    text: error ? error : "Rename success!",
-  };
+    text: error ? error : successText,
+  });
 };

@@ -26,7 +26,7 @@ const withNotify = (Component) => {
 
     return (
       <>
-        <Component {...props} setNotify={setNotifyProps} />
+        <Component {...props} updateNotify={setNotifyProps} />
         <Snackbar
           open={open}
           onClose={handleClose}

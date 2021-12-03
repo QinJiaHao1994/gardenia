@@ -6,20 +6,34 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import AddToDriveIcon from "@mui/icons-material/AddToDrive";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
+import SpeedDial from "../../components/speedDial";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Slide from "@mui/material/Slide";
 import Files from "./Files";
 import File from "./File";
 import Folder from "./Folder";
-import { RenameDialog } from "../../components/file";
+import RenameDialog from "./RenameDialog";
+import CreateFolderDialog from "./CreateFolderDialog";
 import { contains } from "../../common/utils";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const FileWrapper = ({ data = [], type, onOpen, onRename }) => {
+const FileWrapper = ({
+  data = [],
+  type,
+  onOpen,
+  loadings,
+  onRename,
+  onAddFolder,
+  onDelete,
+  onUpload,
+}) => {
   const ref = createRef();
   const [contextMenu, setContextMenu] = useState(null);
   const [open, setOpen] = useState(false);
@@ -62,11 +76,11 @@ const FileWrapper = ({ data = [], type, onOpen, onRename }) => {
   const handleAction = (action) => {
     switch (action) {
       case "rename":
-        setAction("Rename");
+        setAction("rename");
         setOpen(true);
         break;
       case "remove":
-        // setOpen(true);
+        onDelete(select.id);
         break;
       default:
         break;
@@ -74,23 +88,59 @@ const FileWrapper = ({ data = [], type, onOpen, onRename }) => {
     setContextMenu(null);
   };
 
-  const handleCloseDialog = (e) => {
-    e.stopPropagation();
+  const handleAddFolderAction = () => {
+    setAction("addFolder");
+    setOpen(true);
+  };
+
+  const handleUploadAction = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = null;
+    onUpload(file);
+  };
+
+  const closeDialog = () => {
     setAction(null);
     setOpen(false);
   };
 
-  const handleRename = (name) => {
-    const cb = () => {
-      setAction(null);
-      setOpen(false);
-    };
-    onRename(name, select, cb);
+  const handleCloseDialog = (e) => {
+    e.stopPropagation();
+    closeDialog();
   };
+
+  const handleRename = (name) => {
+    onRename(name, select, closeDialog);
+  };
+
+  const handleAddFolder = (name) => {
+    onAddFolder(name, closeDialog);
+  };
+
+  const actions = [
+    {
+      key: 2,
+      label: "Folder",
+      icon: <DriveFolderUploadIcon />,
+      onClick: handleAddFolderAction,
+    },
+    {
+      key: 1,
+      label: "File",
+      icon: <UploadFileIcon />,
+      onClick: () => ref.current.click(),
+    },
+    {
+      key: 0,
+      label: "Markdown",
+      icon: <ChromeReaderModeIcon />,
+      onClick: () => {},
+    },
+  ];
 
   return (
     <Box
-      ref={ref}
       onContextMenu={handleContextMenu}
       sx={{
         display: "flex",
@@ -100,7 +150,13 @@ const FileWrapper = ({ data = [], type, onOpen, onRename }) => {
         p: 2,
       }}
     >
-      {!folders.length && (
+      <SpeedDial
+        actions={actions}
+        FabProps={{
+          color: "secondary",
+        }}
+      />
+      {!data.length && (
         <>
           <Box
             sx={{
@@ -163,14 +219,29 @@ const FileWrapper = ({ data = [], type, onOpen, onRename }) => {
         </MenuItem>
       </Menu>
       <Dialog open={open} fullWidth TransitionComponent={Transition}>
-        {action === "Rename" && (
+        {action === "rename" && (
           <RenameDialog
             data={select}
             onClose={handleCloseDialog}
             onSubmit={handleRename}
+            loading={loadings.rename}
+          />
+        )}
+        {action === "addFolder" && (
+          <CreateFolderDialog
+            onClose={handleCloseDialog}
+            onSubmit={handleAddFolder}
+            loading={loadings.addFolder}
           />
         )}
       </Dialog>
+      <input
+        style={{ display: "none" }}
+        onInput={handleUploadAction}
+        ref={ref}
+        accept="*"
+        type="file"
+      />
     </Box>
   );
 };
