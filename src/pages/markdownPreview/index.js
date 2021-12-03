@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
 import { getMarkdownFileDownloadUrlBelongToCourse } from "../../store/drive/driveApi";
 import { withNotify } from "../../common/hocs";
 import { useRequest } from "../../common/hooks";
@@ -41,9 +43,18 @@ const MarkdownPreview = ({ updateNotify }) => {
   }, [response, updateNotify, navigate]);
 
   return (
-    <div className="container">
-      <MDEditor.Markdown source={value} />
-    </div>
+    <Container
+      maxWidth="lg"
+      sx={{
+        mt: 4,
+        mb: 4,
+        flexGrow: 1,
+      }}
+    >
+      <Paper elevation={3} sx={{ p: 3, flexGrow: 1 }}>
+        <MDEditor.Markdown source={value} />
+      </Paper>
+    </Container>
   );
 };
 

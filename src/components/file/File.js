@@ -4,8 +4,7 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
-// import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
-import FileOpenIcon from "@mui/icons-material/PictureAsPdfIcon";
+import FileOpenIcon from "@mui/icons-material/FileOpen";
 import { withClickAwayWhenSelected } from "../../common/hocs";
 
 const File = forwardRef(
