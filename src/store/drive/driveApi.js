@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {
   collection,
   getDocs,
@@ -8,7 +7,6 @@ import {
   doc,
   deleteDoc,
   updateDoc,
-  documentId,
   getDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../app/firebase";
@@ -21,17 +19,20 @@ import {
   deleteObject,
   getDownloadURL,
 } from "firebase/storage";
+import courseApi from "../course/courseApi";
 
-export const getMarkdownFileDownloadUrlBelongToCourse = async (
-  courseId,
-  id
-) => {
-  const file = await getFileById(id);
-  if (file.courseId !== courseId)
-    throw new Error("The file does not belong to this course!");
-  if (file.type !== "text/markdown")
-    throw new Error(" This is not a file could be previewed!");
-  return await getFileDownloadURL(file.url);
+export const getMarkdownFileDownloadUrlBelongToCourse = async (user, id) => {
+  const { userId, courseId, type, url } = await getFileById(id);
+  if (type !== "text/markdown")
+    throw new Error("This is not a file could be previewed!");
+  console.log(user, userId);
+  if (user.role === 0 && user.id !== userId)
+    throw new Error("Don't have permission!");
+  if (user.role === 1) {
+    const hasPermission = await courseApi.judgePermission(courseId);
+    if (!hasPermission) throw new Error("Don't have permission!");
+  }
+  return await getFileDownloadURL(url);
 };
 
 export const getFileById = async (id) => {
@@ -80,7 +81,7 @@ export const createFolder = async (data) => {
   return id;
 };
 
-export const uploadFile = async (file, courseId, parent, dict) => {
+export const uploadFile = async (file, courseId, parent, dict, userId) => {
   if (file.size > 1024 * 1024 * 8)
     throw new Error("Couldn't upload file greater than 8Mb!");
 
@@ -102,6 +103,7 @@ export const uploadFile = async (file, courseId, parent, dict) => {
     parentId: parent.id,
     size,
     type: contentType,
+    userId,
   };
 
   const collectionRef = collection(db, "files").withConverter(fileConverter);

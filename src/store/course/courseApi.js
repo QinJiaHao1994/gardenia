@@ -105,7 +105,7 @@ class TeacherApi extends CourseApi {
   }
 }
 
-const courseApiFactory = () => {
+const courseApiProxy = () => {
   const studentApi = new StudentApi();
   const teacherApi = new TeacherApi();
 
@@ -121,4 +121,6 @@ const courseApiFactory = () => {
   return proxy;
 };
 
-export default courseApiFactory();
+const proxy = courseApiProxy();
+
+export default proxy;

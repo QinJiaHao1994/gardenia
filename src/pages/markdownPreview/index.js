@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
 import Container from "@mui/material/Container";
@@ -6,19 +7,22 @@ import Paper from "@mui/material/Paper";
 import { getMarkdownFileDownloadUrlBelongToCourse } from "../../store/drive/driveApi";
 import { withNotify } from "../../common/hocs";
 import { useRequest } from "../../common/hooks";
+import { selectUser } from "../../store/user/userSlice";
 
 const MarkdownPreview = ({ updateNotify }) => {
   const navigate = useNavigate();
-  const { courseId, mdId } = useParams();
+  const user = useSelector(selectUser);
+  const { mdId } = useParams();
   const [value, setValue] = useState("");
   const [request, response] = useRequest(
     getMarkdownFileDownloadUrlBelongToCourse
   );
 
   useEffect(() => {
+    if (!user) return;
     const func = async () => {
       try {
-        const url = await request(courseId, mdId);
+        const url = await request(user, mdId);
         const xhr = new XMLHttpRequest();
 
         xhr.responseType = "type";
@@ -28,7 +32,7 @@ const MarkdownPreview = ({ updateNotify }) => {
       } catch (err) {}
     };
     func();
-  }, [courseId, mdId, request]);
+  }, [user, mdId, request]);
 
   useEffect(() => {
     const { error, status } = response;

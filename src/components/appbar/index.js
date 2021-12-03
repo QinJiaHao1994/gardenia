@@ -3,20 +3,20 @@ import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
+// import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import Badge from "@mui/material/Badge";
+// import NotificationsIcon from "@mui/icons-material/Notifications";
+// import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+// import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Logout from "@mui/icons-material/Logout";
-import GradingIcon from "@mui/icons-material/Grading";
+// import GradingIcon from "@mui/icons-material/Grading";
 import Link from "../../components/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import { extractAbbr } from "../../common/utils";
@@ -78,11 +78,11 @@ const AppBar = ({ user, signOut, open, onOpen, show }) => {
         </Link>
         <Box sx={{ flexGrow: 1 }}></Box>
         <Stack direction="row" spacing={2}>
-          <IconButton color="inherit">
+          {/* <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge>
-          </IconButton>
+          </IconButton> */}
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar>{extractAbbr(user)}</Avatar>
@@ -124,19 +124,6 @@ const AppBar = ({ user, signOut, open, onOpen, show }) => {
             open={!!anchor}
             onClose={handleCloseUserMenu}
           >
-            <MenuItem>
-              <ListItemIcon>
-                <AccountCircleIcon />
-              </ListItemIcon>
-              Profile
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <GradingIcon />
-              </ListItemIcon>
-              Grade
-            </MenuItem>
-            <Divider />
             <MenuItem onClick={signOut}>
               <ListItemIcon>
                 <Logout fontSize="small" />

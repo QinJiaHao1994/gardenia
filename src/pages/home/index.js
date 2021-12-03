@@ -3,13 +3,13 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Announcement from "../../components/announcement";
 import { CourseOverview } from "../../components/course";
-import Timeline from "../../components/timeline";
 import { useSelector, useDispatch } from "react-redux";
 import { withIdentity } from "../../store/user/userHoc";
 import {
   fetchCoursesAsync,
   selectCourses,
   selectStatus,
+  reset,
 } from "../../store/course/courseSlice";
 import { useTitle } from "../../common/hooks";
 
@@ -22,6 +22,9 @@ const Home = ({ isStudent }) => {
   useEffect(() => {
     if (status !== "idle") return;
     dispatch(fetchCoursesAsync());
+    return () => {
+      dispatch(reset());
+    };
   }, [dispatch, status]);
 
   return (
@@ -31,9 +34,9 @@ const Home = ({ isStudent }) => {
           <Announcement />
           <CourseOverview courses={courses} readOnly={isStudent} />
         </Grid>
-        <Grid item md={4} xs={12}>
+        {/* <Grid item md={4} xs={12}>
           <Timeline />
-        </Grid>
+        </Grid> */}
       </Grid>
     </Container>
   );

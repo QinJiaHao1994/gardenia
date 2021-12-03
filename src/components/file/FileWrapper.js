@@ -8,7 +8,7 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import DriveFolderUploadIcon from "@mui/icons-material/DriveFolderUpload";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
+// import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import SpeedDial from "../../components/speedDial";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -130,12 +130,6 @@ const FileWrapper = ({
       label: "File",
       icon: <UploadFileIcon />,
       onClick: () => ref.current.click(),
-    },
-    {
-      key: 0,
-      label: "Markdown",
-      icon: <ChromeReaderModeIcon />,
-      onClick: () => {},
     },
   ];
 

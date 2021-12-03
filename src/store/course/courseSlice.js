@@ -27,6 +27,10 @@ export const courseSlice = createSlice({
       const course = state.courses.find((course) => course.id === id);
       Object.assign(course, diffData);
     },
+    reset: (state) => {
+      state.courses = [];
+      state.status = "idle";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -44,7 +48,7 @@ export const courseSlice = createSlice({
   },
 });
 
-export const { setCourse, addCourse } = courseSlice.actions;
+export const { setCourse, addCourse, reset } = courseSlice.actions;
 
 export const selectCourses = (state) => state.course.courses;
 export const selectCourseById = (state, courseId) =>

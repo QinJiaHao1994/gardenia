@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -35,10 +34,12 @@ import {
 } from "../../store/drive/driveApi";
 import { parsePath, parseFiles } from "../../store/drive/driveUtils";
 import { udpateNotifyPropsByResponse } from "../../common/utils";
+import { selectUser } from "../../store/user/userSlice";
 
 const CourseDrive = ({ updateNotify }) => {
   const { courseId } = useParams();
   const status = useSelector(selectStatus);
+  const user = useSelector(selectUser);
   const files = useSelector(selectFiles);
   const defaultPath = useSelector(selectDefaultPath);
   const dispatch = useDispatch();
@@ -73,7 +74,7 @@ const CourseDrive = ({ updateNotify }) => {
     const type = file.type;
 
     if (type === "text/markdown") {
-      window.open(`./preview/${id}`, "_blank");
+      window.open(`/preview/${id}`, "_blank");
       return;
     }
     try {
@@ -126,7 +127,8 @@ const CourseDrive = ({ updateNotify }) => {
         file,
         courseId,
         path[path.length - 1],
-        fileDict
+        fileDict,
+        user.id
       );
       data.createdAt = data.createdAt.getTime();
       data.updatedAt = data.updatedAt.getTime();
@@ -145,6 +147,7 @@ const CourseDrive = ({ updateNotify }) => {
   const handleAddFolder = async (name, cb) => {
     const date = new Date();
     const data = {
+      userId: user.id,
       name,
       isDirectory: true,
       courseId,

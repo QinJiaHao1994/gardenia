@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import ScienceIcon from "@mui/icons-material/Science";
 import SpeedDial from "../../components/speedDial";
 import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
-import QuizIcon from "@mui/icons-material/Quiz";
+// import QuizIcon from "@mui/icons-material/Quiz";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -29,12 +29,6 @@ const CourseDetail = ({ isStudent, isTeacher }) => {
   const handleTabChange = (_, val) => setTab(val);
 
   const actions = [
-    {
-      key: 2,
-      label: "Quiz",
-      icon: <QuizIcon />,
-      onClick: () => {},
-    },
     {
       key: 1,
       label: "Lab",
@@ -68,7 +62,6 @@ const CourseDetail = ({ isStudent, isTeacher }) => {
           <TabList onChange={handleTabChange} aria-label="Course Tabs">
             <Tab label="Lectures" value="1" />
             <Tab label="Labs" value="2" />
-            <Tab label="Quizzes" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">

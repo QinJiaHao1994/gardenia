@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
+// import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import Checkbox from "@mui/material/Checkbox";
+// import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
@@ -29,12 +29,6 @@ const signUpForm = createForm([
   { field: "email", label: "Email Address", required: true },
   { field: "password", label: "Password", required: true },
   { field: "role", label: "Role", required: true },
-  {
-    field: "receiveEmail",
-    label: "I want to receive notification via email.",
-    defaultValue: false,
-    keyOfValue: "checked",
-  },
 ]);
 
 const SignUp = () => {
@@ -142,7 +136,7 @@ const SignUp = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Field
                 name="receiveEmail"
                 component={({ error, helperText, label, ...props }) => {
@@ -154,7 +148,7 @@ const SignUp = () => {
                   );
                 }}
               />
-            </Grid>
+            </Grid> */}
           </Grid>
           <Button
             type="submit"
