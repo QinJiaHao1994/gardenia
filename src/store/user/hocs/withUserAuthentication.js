@@ -2,6 +2,7 @@ import react from "react";
 import { connect } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import { fetchUserAsync, selectStatus, selectUser } from "../userSlice";
+import { reset } from "../../course/courseSlice";
 import { auth } from "../../../app/firebase";
 import { getDisplayName } from "../../../common/utils";
 import { withLocation, withNavigation, compose } from "../../../common/hocs";
@@ -21,6 +22,8 @@ const withUserAuthentication = (Component) => {
     }
 
     componentWillUnmount() {
+      const { dispatch } = this.props;
+      dispatch(reset());
       this.unsubscribe();
     }
 

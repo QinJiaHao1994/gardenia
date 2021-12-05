@@ -9,7 +9,6 @@ import {
   fetchCoursesAsync,
   selectCourses,
   selectStatus,
-  reset,
 } from "../../store/course/courseSlice";
 import { useTitle } from "../../common/hooks";
 
@@ -22,9 +21,6 @@ const Home = ({ isStudent }) => {
   useEffect(() => {
     if (status !== "idle") return;
     dispatch(fetchCoursesAsync());
-    return () => {
-      dispatch(reset());
-    };
   }, [dispatch, status]);
 
   return (

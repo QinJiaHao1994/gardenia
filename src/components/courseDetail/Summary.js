@@ -6,11 +6,14 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 
-const Summary = ({ content, readonly }) => {
+const Summary = ({ content, readonly, onSave }) => {
   const [show, setShow] = useState(false);
   const [text, setText] = useState(content);
   const handleOpen = () => setShow(true);
-  const handleSave = () => setShow(false);
+  const handleSave = () => {
+    onSave(text);
+    setShow(false);
+  };
   const handleChange = (e) => setText(e.target.value);
 
   return (

@@ -25,7 +25,6 @@ export const getMarkdownFileDownloadUrlBelongToCourse = async (user, id) => {
   const { userId, courseId, type, url } = await getFileById(id);
   if (type !== "text/markdown")
     throw new Error("This is not a file could be previewed!");
-  console.log(user, userId);
   if (user.role === 0 && user.id !== userId)
     throw new Error("Don't have permission!");
   if (user.role === 1) {
@@ -48,6 +47,18 @@ export const getFiles = async (courseId) => {
   const querySnapshot = await getDocs(q);
   const files = {};
   querySnapshot.docs.forEach((doc) => (files[doc.id] = collectIdsAndDocs(doc)));
+  return files;
+};
+
+export const getFilesByCourseId = async (courseId) => {
+  const collectionRef = collection(db, "files").withConverter(fileConverter);
+  const q = query(
+    collectionRef,
+    where("course_id", "==", courseId),
+    where("is_directory", "==", false)
+  );
+  const querySnapshot = await getDocs(q);
+  const files = querySnapshot.docs.map(collectIdsAndDocs);
   return files;
 };
 
