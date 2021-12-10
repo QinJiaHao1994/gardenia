@@ -172,9 +172,8 @@ const CourseDrive = ({ updateNotify }) => {
   }, [resAddFolder, updateNotify]);
 
   useEffect(() => {
-    if (status !== "idle") return;
     dispatch(fetchDriveAsync(courseId));
-  }, [dispatch, status, courseId]);
+  }, [dispatch, courseId]);
 
   useEffect(() => {
     setPath(defaultPath);
